@@ -1,0 +1,224 @@
+---
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { 
+	title = "Catálogo – Semireys", 
+	description = "Colección de ropa elegante y prendas personalizadas de Semireys." 
+} = Astro.props;
+---
+
+<!dnctype html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<!-- Header / Navbar -->
+		<header class="navbar">
+			<div class="nav-container">
+				<a href="/" class="brand-logo">
+					<span class="logo-accent">SEMI</span>REYS
+				</a>
+				<nav class="nav-links">
+					<a href="/" class="nav-link active">Catálogo</a>
+					<a href="#" class="nav-link">Nuestra Marca</a>
+					<a href="#" class="nav-link">Contacto</a>
+				</nav>
+			</div>
+		</header>
+
+		<!-- Main Content Slot -->
+		<main class="main-content">
+			<slot />
+		</main>
+
+		<!-- Footer -->
+		<footer class="site-footer">
+			<div class="footer-container">
+				<div class="footer-brand">
+					<h3>SEMIREYS</h3>
+					<p>Elegancia en lino y moda exclusiva confeccionada a tu medida.</p>
+				</div>
+				<div class="footer-copy">
+					&copy; {new Date().getFullYear()} SEMIREYS. Todos los derechos reservados.
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+		--font-serif: 'Playfair Display', Georgia, serif;
+
+		--bg-main: #FDFBF7;
+		--bg-card: #FFFFFF;
+		--surface-dark: #121824;
+		--text-primary: #1E293B;
+		--text-muted: #64748B;
+		--text-light: #F8FAFC;
+
+		--accent-primary: #C27D38;
+		--accent-primary-hover: #A66627;
+		--accent-secondary: #0F172A;
+		--accent-soft: #FDF4EB;
+
+		--border-color: #E2E8F0;
+		--border-focus: #C27D38;
+
+		--radius-sm: 8px;
+		--radius-md: 14px;
+		--radius-lg: 24px;
+
+		--shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+		--shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
+		--shadow-hover: 0 20px 40px rgba(194, 125, 56, 0.12);
+	}
+
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	html, body {
+		height: 100%;
+		font-family: var(--font-sans);
+		background-color: var(--bg-main);
+		color: var(--text-primary);
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	body {
+		display: flex;
+		flex-direction: column;
+		min-height: 100vh;
+	}
+
+	/* Header styles */
+	.navbar {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		background: rgba(253, 251, 247, 0.85);
+		backdrop-filter: blur(12px);
+		-webkit-backdrop-filter: blur(12px);
+		border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+		transition: all 0.3s ease;
+	}
+
+	.nav-container {
+		max-width: 1240px;
+		margin: 0 auto;
+		padding: 1.25rem 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.brand-logo {
+		font-family: var(--font-serif);
+		font-size: 1.75rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		color: var(--accent-secondary);
+		text-decoration: none;
+		display: flex;
+		align-items: center;
+		gap: 2px;
+	}
+
+	.logo-accent {
+		color: var(--accent-primary);
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 2rem;
+	}
+
+	.nav-link {
+		text-decoration: none;
+		color: var(--text-muted);
+		font-weight: 500;
+		font-size: 0.95rem;
+		transition: color 0.2s ease;
+		position: relative;
+	}
+
+	.nav-link:hover, .nav-link.active {
+		color: var(--accent-primary);
+	}
+
+	.nav-link.active::after {
+		content: '';
+		position: absolute;
+		bottom: -6px;
+		left: 0;
+		width: 100%;
+		height: 2px;
+		background: var(--accent-primary);
+		border-radius: 2px;
+	}
+
+	/* Main content */
+	.main-content {
+		flex: 1;
+		width: 100%;
+	}
+
+	/* Footer */
+	.site-footer {
+		background-color: var(--surface-dark);
+		color: var(--text-light);
+		padding: 3rem 1.5rem 2rem;
+		margin-top: 5rem;
+	}
+
+	.footer-container {
+		max-width: 1240px;
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 1.5rem;
+	}
+
+	.footer-brand h3 {
+		font-family: var(--font-serif);
+		font-size: 1.5rem;
+		letter-spacing: 0.1em;
+		color: #FFFFFF;
+		margin-bottom: 0.5rem;
+	}
+
+	.footer-brand p {
+		color: #94A3B8;
+		font-size: 0.9rem;
+		max-width: 400px;
+	}
+
+	.footer-copy {
+		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		width: 100%;
+		padding-top: 1.5rem;
+		font-size: 0.85rem;
+		color: #64748B;
+	}
+</style>

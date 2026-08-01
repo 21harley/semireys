@@ -1,0 +1,686 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import productsData from '../../data/products.json';
+import type { Product } from '../../components/ProductCard.astro';
+
+export async function getStaticPaths() {
+	return productsData.map((product) => ({
+		params: { slug: product.slug },
+		props: { product },
+	}));
+}
+
+interface Props {
+	product: Product;
+}
+
+const { product } = Astro.props;
+
+// Default site URL for WhatsApp sharing
+const canonicalUrl = `https://semireys.com/productos/${product.slug}`;
+---
+
+<Layout title={`${product.name} – Semireys`} description={product.description}>
+	<div class="product-detail-container">
+		<!-- Breadcrumb -->
+		<nav class="breadcrumb">
+			<a href="/" class="back-link">
+				<span class="arrow">←</span> Volver al Catálogo
+			</a>
+		</nav>
+
+		<div class="product-layout">
+			<!-- Gallery / Carousel Section -->
+			<div class="gallery-section">
+				<div class="carousel-container">
+					<!-- Main image viewport -->
+					<div class="carousel-viewport">
+						{product.images.map((img, idx) => (
+							<img 
+								src={img} 
+								alt={`${product.name} - Imagen ${idx + 1}`} 
+								class={`carousel-slide ${idx === 0 ? 'active' : ''}`}
+								data-slide-index={idx}
+							/>
+						))}
+
+						<!-- Carousel Navigation Arrows -->
+						{product.images.length > 1 && (
+							<div class="carousel-controls">
+								<button type="button" class="carousel-arrow prev" id="carousel-prev" aria-label="Imagen anterior">
+									❮
+								</button>
+								<button type="button" class="carousel-arrow next" id="carousel-next" aria-label="Imagen siguiente">
+									❯
+								</button>
+							</div>
+						)}
+
+						<!-- Image counter badge -->
+						{product.images.length > 1 && (
+							<div class="slide-counter" id="slide-counter">
+								1 / {product.images.length}
+							</div>
+						)}
+					</div>
+
+					<!-- Thumbnails Strip -->
+					{product.images.length > 1 && (
+						<div class="thumbnail-strip">
+							{product.images.map((img, idx) => (
+								<button 
+									type="button"
+									class={`thumbnail-btn ${idx === 0 ? 'active' : ''}`}
+									data-index={idx}
+									aria-label={`Ver imagen ${idx + 1}`}
+								>
+									<img src={img} alt={`Miniatura ${idx + 1}`} />
+								</button>
+							))}
+						</div>
+					)}
+				</div>
+			</div>
+
+			<!-- Product Info & Dynamic JSON Extraction -->
+			<div class="info-section">
+				<span class="brand-tag">SEMIREYS EXCLUSIVE</span>
+				<h1 class="product-title">{product.name}</h1>
+				<div class="price-tag">${product.price}</div>
+
+				<p class="product-description">{product.description}</p>
+
+				<div class="divider"></div>
+
+				<!-- Color Selector (Extracted from JSON) -->
+				<div class="selector-group">
+					<label class="selector-label">
+						Color: <span id="selected-color-name" class="selected-value">Seleccionar</span>
+					</label>
+					<div class="color-options" id="color-options">
+						{product.colors.map((color) => (
+							<button 
+								type="button" 
+								class="color-chip" 
+								data-color-name={color.name}
+								title={color.name}
+							>
+								<span class="color-preview" style={`background-color: ${color.hex};`}></span>
+								<span class="color-text">{color.name}</span>
+							</button>
+						))}
+					</div>
+				</div>
+
+				<!-- Available Sizes Selector (Extracted from JSON) -->
+				<div class="selector-group">
+					<label class="selector-label">
+						Talla Disponible: <span id="selected-size-name" class="selected-value">Seleccionar</span>
+					</label>
+					<div class="size-options" id="size-options">
+						{product.sizes.map((size) => (
+							<button 
+								type="button" 
+								class="size-chip" 
+								data-size-name={size}
+							>
+								{size}
+							</button>
+						))}
+					</div>
+				</div>
+
+				<!-- Product Shareable Link -->
+				<div class="product-link-box">
+					<span class="link-label">🔗 Enlace del producto:</span>
+					<span class="link-url">{canonicalUrl}</span>
+				</div>
+
+				<!-- Actions -->
+				<div class="actions-group">
+					<button type="button" class="btn-customize" id="customize-btn">
+						✏️ Personalizar esta prenda
+					</button>
+
+					<button 
+						type="button" 
+						class="btn-whatsapp disabled" 
+						id="whatsapp-btn" 
+						data-product-name={product.name}
+						data-product-price={product.price}
+						data-product-url={canonicalUrl}
+						disabled
+					>
+						<svg class="ws-icon" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+							<path d="M12.031 2c-5.514 0-9.999 4.486-9.999 10 0 1.996.589 3.856 1.603 5.424L2 22l4.731-1.543A9.957 9.957 0 0 0 12.031 22c5.514 0 10-4.486 10-10s-4.486-10-10-10zm.001 18a7.95 7.95 0 0 1-4.08-1.121l-.293-.173-2.825.922.937-2.753-.189-.3A7.952 7.952 0 0 1 4.032 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8zm4.387-5.992c-.24-.12-1.423-.703-1.644-.783-.22-.08-.38-.12-.54.12-.16.24-.622.783-.762.943-.14.16-.28.18-.52.06-.24-.12-1.015-.374-1.933-1.193-.715-.638-1.198-1.426-1.338-1.666-.14-.24-.015-.37.105-.489.108-.107.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.303-.74-1.783-.195-.468-.393-.404-.54-.412l-.46-.008c-.16 0-.42.06-.64.3-.22.24-.84.822-.84 2.005 0 1.183.86 2.325.98 2.486.12.16 1.69 2.58 4.095 3.618.572.247 1.019.395 1.368.506.574.183 1.096.157 1.509.095.461-.069 1.423-.582 1.623-1.143.2-.561.2-1.042.14-1.143-.06-.1-.22-.16-.46-.28z"/>
+						</svg>
+						<span id="whatsapp-btn-text">Selecciona Color y Talla</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		let selectedColor: string | null = null;
+		let selectedSize: string | null = null;
+		let currentSlideIndex = 0;
+
+		// Carousel Elements
+		const slides = document.querySelectorAll<HTMLImageElement>('.carousel-slide');
+		const thumbnailBtns = document.querySelectorAll<HTMLButtonElement>('.thumbnail-btn');
+		const prevBtn = document.getElementById('carousel-prev');
+		const nextBtn = document.getElementById('carousel-next');
+		const counter = document.getElementById('slide-counter');
+
+		const totalSlides = slides.length;
+
+		function showSlide(index: number) {
+			if (totalSlides === 0) return;
+			currentSlideIndex = (index + totalSlides) % totalSlides;
+
+			slides.forEach((slide, idx) => {
+				if (idx === currentSlideIndex) {
+					slide.classList.add('active');
+				} else {
+					slide.classList.remove('active');
+				}
+			});
+
+			thumbnailBtns.forEach((btn, idx) => {
+				if (idx === currentSlideIndex) {
+					btn.classList.add('active');
+				} else {
+					btn.classList.remove('active');
+				}
+			});
+
+			if (counter) {
+				counter.textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+			}
+		}
+
+		if (prevBtn) {
+			prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+		}
+		if (nextBtn) {
+			nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+		}
+
+		thumbnailBtns.forEach((btn) => {
+			btn.addEventListener('click', () => {
+				const idx = parseInt(btn.dataset.index || '0', 10);
+				showSlide(idx);
+			});
+		});
+
+		// Selectors & WhatsApp logic
+		const colorChips = document.querySelectorAll('.color-chip');
+		const sizeChips = document.querySelectorAll('.size-chip');
+
+		const selectedColorSpan = document.getElementById('selected-color-name');
+		const selectedSizeSpan = document.getElementById('selected-size-name');
+
+		const whatsappBtn = document.getElementById('whatsapp-btn') as HTMLButtonElement | null;
+		const whatsappBtnText = document.getElementById('whatsapp-btn-text');
+		const customizeBtn = document.getElementById('customize-btn');
+
+		if (!whatsappBtn) return;
+
+		const productName = whatsappBtn.dataset.productName || 'Prenda Semireys';
+		const productPrice = whatsappBtn.dataset.productPrice || '0.00';
+		const productUrl = whatsappBtn.dataset.productUrl || window.location.href;
+
+		colorChips.forEach(chip => {
+			chip.addEventListener('click', () => {
+				colorChips.forEach(c => c.classList.remove('active'));
+				chip.classList.add('active');
+				selectedColor = chip.getAttribute('data-color-name');
+				if (selectedColorSpan && selectedColor) {
+					selectedColorSpan.textContent = selectedColor;
+				}
+				updateWhatsAppButtonState();
+			});
+		});
+
+		sizeChips.forEach(chip => {
+			chip.addEventListener('click', () => {
+				sizeChips.forEach(s => s.classList.remove('active'));
+				chip.classList.add('active');
+				selectedSize = chip.getAttribute('data-size-name');
+				if (selectedSizeSpan && selectedSize) {
+					selectedSizeSpan.textContent = selectedSize;
+				}
+				updateWhatsAppButtonState();
+			});
+		});
+
+		function updateWhatsAppButtonState() {
+			if (!whatsappBtn || !whatsappBtnText) return;
+			if (selectedColor && selectedSize) {
+				whatsappBtn.removeAttribute('disabled');
+				whatsappBtn.classList.remove('disabled');
+				whatsappBtnText.textContent = 'Comprar por WhatsApp';
+			} else {
+				whatsappBtn.setAttribute('disabled', 'true');
+				whatsappBtn.classList.add('disabled');
+				whatsappBtnText.textContent = 'Selecciona Color y Talla';
+			}
+		}
+
+		whatsappBtn.addEventListener('click', () => {
+			if (!selectedColor || !selectedSize) return;
+
+			const phone = "584145321885";
+			const textLines = [
+				"🌐 *Pedido desde la Página Web*",
+				"",
+				"👋 ¡Hola Semireys! Me gustaría comprar esta prenda:",
+				"",
+				`👕 *${productName}*`,
+				`🎨 *Color:* ${selectedColor}`,
+				`📐 *Talla:* ${selectedSize}`,
+				`💰 *Precio:* $${productPrice}`,
+				`🔗 *Enlace:* ${productUrl}`
+			];
+
+			const textMsg = textLines.join("\n");
+			const encodedMsg = encodeURIComponent(textMsg);
+			const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
+
+			window.open(whatsappUrl, '_blank');
+		});
+
+		if (customizeBtn) {
+			customizeBtn.addEventListener('click', () => {
+				alert(`Personalización para "${productName}": Proximamente podrás agregar tus medidas exactas y bordados personalizados.`);
+			});
+		}
+	});
+</script>
+
+<style>
+	.product-detail-container {
+		max-width: 1240px;
+		margin: 0 auto;
+		padding: 2.5rem 1.5rem 4rem;
+	}
+
+	.breadcrumb {
+		margin-bottom: 2rem;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+		color: var(--text-muted);
+		font-weight: 600;
+		font-size: 0.95rem;
+		transition: color 0.2s ease;
+	}
+
+	.back-link:hover {
+		color: var(--accent-primary);
+	}
+
+	.product-layout {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 3.5rem;
+		align-items: start;
+	}
+
+	@media (max-width: 900px) {
+		.product-layout {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+	}
+
+	/* Carousel Section */
+	.gallery-section {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.carousel-container {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.carousel-viewport {
+		position: relative;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		background: #F1F5F9;
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		border: 1px solid var(--border-color);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.carousel-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		opacity: 0;
+		transition: opacity 0.4s ease-in-out;
+		pointer-events: none;
+	}
+
+	.carousel-slide.active {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	/* Carousel controls */
+	.carousel-controls {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		right: 0;
+		transform: translateY(-50%);
+		display: flex;
+		justify-content: space-between;
+		padding: 0 12px;
+		pointer-events: none;
+	}
+
+	.carousel-arrow {
+		pointer-events: auto;
+		width: 42px;
+		height: 42px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.9);
+		border: 1px solid var(--border-color);
+		color: var(--text-primary);
+		font-size: 1.1rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		box-shadow: var(--shadow-sm);
+		transition: all 0.2s ease;
+	}
+
+	.carousel-arrow:hover {
+		background: #FFFFFF;
+		color: var(--accent-primary);
+		transform: scale(1.1);
+	}
+
+	.slide-counter {
+		position: absolute;
+		bottom: 12px;
+		right: 12px;
+		background: rgba(15, 23, 42, 0.75);
+		backdrop-filter: blur(4px);
+		color: #FFFFFF;
+		font-size: 0.75rem;
+		font-weight: 600;
+		padding: 4px 10px;
+		border-radius: var(--radius-sm);
+	}
+
+	/* Thumbnail Strip */
+	.thumbnail-strip {
+		display: flex;
+		gap: 0.75rem;
+		overflow-x: auto;
+		padding-bottom: 4px;
+	}
+
+	.thumbnail-btn {
+		width: 80px;
+		height: 90px;
+		flex-shrink: 0;
+		border-radius: var(--radius-sm);
+		border: 2px solid transparent;
+		background: #F1F5F9;
+		padding: 0;
+		cursor: pointer;
+		overflow: hidden;
+		transition: all 0.2s ease;
+	}
+
+	.thumbnail-btn img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.thumbnail-btn.active, .thumbnail-btn:hover {
+		border-color: var(--accent-primary);
+		transform: translateY(-2px);
+	}
+
+	/* Info section */
+	.info-section {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.brand-tag {
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.15em;
+		color: var(--accent-primary);
+		text-transform: uppercase;
+		margin-bottom: 0.5rem;
+	}
+
+	.product-title {
+		font-family: var(--font-serif);
+		font-size: 2.25rem;
+		font-weight: 700;
+		color: var(--accent-secondary);
+		line-height: 1.25;
+		margin-bottom: 0.75rem;
+	}
+
+	.price-tag {
+		font-size: 1.75rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		margin-bottom: 1.25rem;
+	}
+
+	.product-description {
+		color: var(--text-muted);
+		font-size: 1.05rem;
+		line-height: 1.7;
+		margin-bottom: 1.5rem;
+	}
+
+	.divider {
+		height: 1px;
+		background-color: var(--border-color);
+		margin-bottom: 1.75rem;
+	}
+
+	/* Selectors */
+	.selector-group {
+		margin-bottom: 1.75rem;
+	}
+
+	.selector-label {
+		display: block;
+		font-weight: 700;
+		font-size: 0.95rem;
+		color: var(--text-primary);
+		margin-bottom: 0.75rem;
+	}
+
+	.selected-value {
+		font-weight: 500;
+		color: var(--accent-primary);
+		margin-left: 0.25rem;
+	}
+
+	.color-options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+	}
+
+	.color-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.5rem 1rem;
+		background: #FFFFFF;
+		border: 1.5px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		font-family: inherit;
+		font-size: 0.9rem;
+		font-weight: 500;
+		color: var(--text-primary);
+		transition: all 0.2s ease;
+	}
+
+	.color-chip:hover {
+		border-color: var(--accent-primary);
+	}
+
+	.color-chip.active {
+		border-color: var(--accent-primary);
+		background-color: var(--accent-soft);
+		box-shadow: 0 0 0 1px var(--accent-primary);
+	}
+
+	.color-preview {
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border: 1px solid rgba(0,0,0,0.2);
+	}
+
+	.size-options {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.size-chip {
+		min-width: 48px;
+		height: 44px;
+		padding: 0 1rem;
+		background: #FFFFFF;
+		border: 1.5px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		font-family: inherit;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: all 0.2s ease;
+	}
+
+	.size-chip:hover {
+		border-color: var(--accent-primary);
+	}
+
+	.size-chip.active {
+		border-color: var(--accent-primary);
+		background-color: var(--accent-secondary);
+		color: #FFFFFF;
+	}
+
+	/* Product Link Box */
+	.product-link-box {
+		background: #F8FAFC;
+		border: 1px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		padding: 0.75rem 1rem;
+		margin-bottom: 1.75rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		font-size: 0.85rem;
+	}
+
+	.link-label {
+		font-weight: 600;
+		color: var(--text-muted);
+	}
+
+	.link-url {
+		color: var(--accent-primary);
+		font-weight: 500;
+		word-break: break-all;
+	}
+
+	/* Actions */
+	.actions-group {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.btn-customize {
+		width: 100%;
+		padding: 0.9rem 1.5rem;
+		background: #FFFFFF;
+		border: 1.5px dashed var(--accent-primary);
+		border-radius: var(--radius-md);
+		color: var(--accent-primary);
+		font-family: inherit;
+		font-size: 1rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: all 0.25s ease;
+	}
+
+	.btn-customize:hover {
+		background: var(--accent-soft);
+		transform: translateY(-2px);
+	}
+
+	.btn-whatsapp {
+		width: 100%;
+		padding: 1.1rem 1.5rem;
+		background: #25D366;
+		border: none;
+		border-radius: var(--radius-md);
+		color: #FFFFFF;
+		font-family: inherit;
+		font-size: 1.05rem;
+		font-weight: 700;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.75rem;
+		box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+		transition: all 0.3s ease;
+	}
+
+	.btn-whatsapp:hover:not(:disabled) {
+		background: #20BA5A;
+		transform: translateY(-3px);
+		box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+	}
+
+	.btn-whatsapp.disabled, .btn-whatsapp:disabled {
+		background: #CBD5E1;
+		color: #64748B;
+		cursor: not-allowed;
+		box-shadow: none;
+		transform: none;
+	}
+</style>

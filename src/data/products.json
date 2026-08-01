@@ -1,0 +1,51 @@
+[
+  {
+    "id": "1",
+    "slug": "camisa-rayas-salmon",
+    "name": "Camisa a rayas con botones salmón",
+    "price": "49.99",
+    "description": "Camisa premium confeccionada en fina mezcla de algodón y lino a rayas, diseñada para ofrecer máxima frescura, ligereza y estilo contemporáneo en cualquier ocasión.",
+    "images": [
+      "/images/camisa_salmon_front.png",
+      "/images/camisa_salmon_detail.png"
+    ],
+    "colors": [
+      { "name": "Salmón", "hex": "#E68B75" },
+      { "name": "Blanco Hueso", "hex": "#F4F1EA" },
+      { "name": "Azul Marino", "hex": "#1E293B" }
+    ],
+    "sizes": ["S", "M", "L", "XL"]
+  },
+  {
+    "id": "2",
+    "slug": "guayabera-clasica-blanca",
+    "name": "Guayabera Clásica Blanca en Lino",
+    "price": "59.99",
+    "description": "Tradicional guayabera de lino 100% caracterizada por sus alforzas finamente cosidas y detalles artesanales. Ideal para eventos formales y de verano.",
+    "images": [
+      "/images/guayabera_blanca_front.png",
+      "/images/camisa_salmon_detail.png"
+    ],
+    "colors": [
+      { "name": "Blanco Puro", "hex": "#FFFFFF" },
+      { "name": "Beige Arena", "hex": "#E5D9C5" }
+    ],
+    "sizes": ["S", "M", "L", "XL", "XXL"]
+  },
+  {
+    "id": "3",
+    "slug": "camisa-lino-azul-marino",
+    "name": "Camisa de Lino Casual Azul Marino",
+    "price": "54.99",
+    "description": "Camisa de manga larga enrollable en tono azul marino profundo. Un básico imprescindible de alta elegancia informal.",
+    "images": [
+      "/images/camisa_salmon_detail.png",
+      "/images/camisa_salmon_front.png"
+    ],
+    "colors": [
+      { "name": "Azul Marino", "hex": "#1B2A4A" },
+      { "name": "Celeste", "hex": "#A0C4DF" }
+    ],
+    "sizes": ["S", "M", "L", "XL"]
+  }
+]
