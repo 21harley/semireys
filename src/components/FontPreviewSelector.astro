@@ -1,0 +1,374 @@
+---
+interface FontOption {
+	id: string;
+	name: string;
+	family: string;
+	icon: string;
+	styleClass?: string;
+}
+
+const defaultFonts: FontOption[] = [
+	{ id: 'plus-jakarta', name: 'Plus Jakarta Sans', family: '"Plus Jakarta Sans", sans-serif', icon: '✨' },
+	{ id: 'playfair', name: 'Playfair Display', family: '"Playfair Display", serif', icon: '👑' },
+	{ id: 'bebas', name: 'Bebas Neue', family: '"Bebas Neue", cursive', icon: '⚽' },
+	{ id: 'montserrat', name: 'Montserrat', family: '"Montserrat", sans-serif', icon: '🏙️' },
+	{ id: 'oswald', name: 'Oswald', family: '"Oswald", sans-serif', icon: '🔥' },
+	{ id: 'pacifico', name: 'Pacifico', family: '"Pacifico", cursive', icon: '✍️' },
+	{ id: 'cinzel', name: 'Cinzel', family: '"Cinzel", serif', icon: '🏛️' },
+	{ id: 'lobster', name: 'Lobster', family: '"Lobster", cursive', icon: '🎸' },
+	{ id: 'anton', name: 'Anton', family: '"Anton", sans-serif', icon: '💥' },
+	{ id: 'roboto-slab', name: 'Roboto Slab', family: '"Roboto Slab", serif', icon: '📰' },
+];
+---
+
+<!-- Preload Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Cinzel:wght@700&family=Lobster&family=Montserrat:wght@800&family=Oswald:wght@700&family=Pacifico&family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@800&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
+<div class="font-preview-selector-container">
+	<div class="selector-header">
+		<label class="control-label">2. Elige la Tipografía (Vista Previa en Vivo):</label>
+	</div>
+
+	<!-- Visual Font Cards Grid -->
+	<div class="font-cards-grid" id="font-cards-grid">
+		{defaultFonts.map((font, idx) => (
+			<button 
+				type="button" 
+				class={`font-card ${idx === 0 ? 'active' : ''}`}
+				data-font-family={font.family}
+				data-font-name={font.name}
+			>
+				<div class="font-card-header">
+					<span class="font-icon">{font.icon}</span>
+					<span class="font-name-label">{font.name}</span>
+				</div>
+				<div class="font-sample-preview" style={`font-family: ${font.family};`}>
+					<span class="preview-text-target">SEMIREYS</span>
+				</div>
+			</button>
+		))}
+	</div>
+
+	<!-- Custom Google Font URL Loader -->
+	<div class="custom-font-url-container">
+		<label for="custom-font-url-input" class="sub-label">🔗 ¿Quieres otra fuente? Pega la URL de Google Fonts:</label>
+		<div class="font-url-input-row">
+			<input type="url" id="custom-font-url-input" placeholder="https://fonts.googleapis.com/css2?family=..." class="font-url-field" />
+			<button type="button" id="btn-load-custom-font" class="btn-load-font">Cargar</button>
+		</div>
+		<span class="font-feedback-badge hidden" id="font-feedback"></span>
+	</div>
+</div>
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const grid = document.getElementById('font-cards-grid');
+		const customTextInput = document.getElementById('custom-text-input') as HTMLInputElement | null;
+		const customFontUrlInput = document.getElementById('custom-font-url-input') as HTMLInputElement | null;
+		const btnLoadCustomFont = document.getElementById('btn-load-custom-font');
+		const fontFeedback = document.getElementById('font-feedback');
+
+		// Sync preview text targets across all font cards when typing
+		function updatePreviewTexts(text: string) {
+			const displayStr = text.trim() ? text.toUpperCase() : 'SEMIREYS';
+			const previewTargets = document.querySelectorAll('.preview-text-target');
+			previewTargets.forEach(target => {
+				target.textContent = displayStr;
+			});
+		}
+
+		if (customTextInput) {
+			customTextInput.addEventListener('input', (e) => {
+				updatePreviewTexts((e.target as HTMLInputElement).value);
+			});
+		}
+
+		// Font card click selection
+		function attachCardEvents() {
+			const cards = document.querySelectorAll('.font-card');
+			cards.forEach(card => {
+				card.addEventListener('click', () => {
+					cards.forEach(c => c.classList.remove('active'));
+					card.classList.add('active');
+
+					const family = card.getAttribute('data-font-family');
+					if (family) {
+						// Dispatch custom event so 3D shirt listener picks it up
+						window.dispatchEvent(new CustomEvent('font-selected', { 
+							detail: { fontFamily: family } 
+						}));
+					}
+				});
+			});
+		}
+
+		attachCardEvents();
+
+		// Custom Google Font URL Loader
+		if (btnLoadCustomFont && customFontUrlInput) {
+			btnLoadCustomFont.addEventListener('click', () => {
+				const urlStr = customFontUrlInput.value.trim();
+				if (!urlStr) {
+					if (fontFeedback) {
+						fontFeedback.textContent = '⚠️ Ingresa una URL de Google Fonts.';
+						fontFeedback.className = 'font-feedback-badge error';
+					}
+					return;
+				}
+
+				try {
+					const url = new URL(urlStr);
+					if (!url.hostname.includes('fonts.googleapis.com') && !url.hostname.includes('fonts.gstatic.com')) {
+						if (fontFeedback) {
+							fontFeedback.textContent = '⚠️ La URL debe ser oficial de Google Fonts (https://fonts.googleapis.com/...)';
+							fontFeedback.className = 'font-feedback-badge error';
+						}
+						return;
+					}
+
+					const familyParam = url.searchParams.get('family');
+					if (!familyParam) {
+						if (fontFeedback) {
+							fontFeedback.textContent = '⚠️ No se encontró el parámetro family en la URL.';
+							fontFeedback.className = 'font-feedback-badge error';
+						}
+						return;
+					}
+
+					const fontNameRaw = familyParam.split(':')[0].split('&')[0].replace(/\+/g, ' ');
+					const fontFamilyFull = `"${fontNameRaw}", sans-serif`;
+
+					// Inject stylesheet
+					const link = document.createElement('link');
+					link.rel = 'stylesheet';
+					link.href = urlStr;
+					document.head.appendChild(link);
+
+					if (fontFeedback) {
+						fontFeedback.textContent = `⏳ Cargando "${fontNameRaw}"...`;
+						fontFeedback.className = 'font-feedback-badge info';
+					}
+
+					document.fonts.load(`16px "${fontNameRaw}"`).then(() => {
+						if (fontFeedback) {
+							fontFeedback.textContent = `✅ Fuente "${fontNameRaw}" cargada con éxito!`;
+							fontFeedback.className = 'font-feedback-badge success';
+						}
+
+						// Create new card for loaded custom font
+						if (grid) {
+							const newBtn = document.createElement('button');
+							newBtn.type = 'button';
+							newBtn.className = 'font-card active';
+							newBtn.setAttribute('data-font-family', fontFamilyFull);
+							newBtn.setAttribute('data-font-name', fontNameRaw);
+
+							const currentVal = customTextInput ? customTextInput.value.trim().toUpperCase() || 'SEMIREYS' : 'SEMIREYS';
+
+							newBtn.innerHTML = `
+								<div class="font-card-header">
+									<span class="font-icon">✨</span>
+									<span class="font-name-label">${fontNameRaw} (Personalizada)</span>
+								</div>
+								<div class="font-sample-preview" style="font-family: ${fontFamilyFull};">
+									<span class="preview-text-target">${currentVal}</span>
+								</div>
+							`;
+
+							// Deselect old cards and select new one
+							document.querySelectorAll('.font-card').forEach(c => c.classList.remove('active'));
+							grid.appendChild(newBtn);
+
+							attachCardEvents();
+
+							window.dispatchEvent(new CustomEvent('font-selected', { 
+								detail: { fontFamily: fontFamilyFull } 
+							}));
+						}
+					}).catch(() => {
+						if (fontFeedback) {
+							fontFeedback.textContent = `⚠️ Error al cargar "${fontNameRaw}".`;
+							fontFeedback.className = 'font-feedback-badge error';
+						}
+					});
+				} catch (e) {
+					if (fontFeedback) {
+						fontFeedback.textContent = '⚠️ URL de Google Fonts no válida.';
+						fontFeedback.className = 'font-feedback-badge error';
+					}
+				}
+			});
+		}
+	});
+</script>
+
+<style>
+	.font-preview-selector-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.selector-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.control-label {
+		font-weight: 700;
+		font-size: 0.9rem;
+		color: var(--text-primary);
+	}
+
+	.sub-label {
+		font-size: 0.78rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		margin-bottom: 4px;
+		display: block;
+	}
+
+	/* Grid of visual font cards */
+	.font-cards-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 0.6rem;
+		max-height: 240px;
+		overflow-y: auto;
+		padding-right: 4px;
+	}
+
+	/* Custom Scrollbar for Font Grid */
+	.font-cards-grid::-webkit-scrollbar {
+		width: 5px;
+	}
+	.font-cards-grid::-webkit-scrollbar-track {
+		background: #F1F5F9;
+		border-radius: 3px;
+	}
+	.font-cards-grid::-webkit-scrollbar-thumb {
+		background: #CBD5E1;
+		border-radius: 3px;
+	}
+
+	.font-card {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.35rem;
+		padding: 0.6rem 0.75rem;
+		background: #FFFFFF;
+		border: 1.5px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		text-align: left;
+		transition: all 0.2s ease;
+	}
+
+	.font-card:hover {
+		border-color: var(--accent-primary);
+		background: var(--accent-soft);
+	}
+
+	.font-card.active {
+		border-color: var(--accent-primary);
+		background: #FFFDF9;
+		box-shadow: 0 2px 8px rgba(194, 125, 56, 0.25);
+		outline: 2px solid var(--accent-primary);
+	}
+
+	.font-card-header {
+		display: flex;
+		align-items: center;
+		gap: 0.35rem;
+		font-size: 0.72rem;
+		font-weight: 600;
+		color: var(--text-muted);
+	}
+
+	.font-sample-preview {
+		font-size: 1.1rem;
+		font-weight: 800;
+		color: var(--text-primary);
+		line-height: 1.2;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%;
+	}
+
+	/* Custom URL Loader */
+	.custom-font-url-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		background: #F8FAFC;
+		padding: 0.75rem;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-color);
+	}
+
+	.font-url-input-row {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.font-url-field {
+		flex: 1;
+		padding: 0.5rem 0.75rem;
+		border: 1px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		font-size: 0.8rem;
+		outline: none;
+	}
+
+	.font-url-field:focus {
+		border-color: var(--accent-primary);
+	}
+
+	.btn-load-font {
+		padding: 0.5rem 0.9rem;
+		background: var(--accent-secondary);
+		color: #FFFFFF;
+		border: none;
+		border-radius: var(--radius-sm);
+		font-weight: 700;
+		font-size: 0.8rem;
+		cursor: pointer;
+		transition: background 0.2s ease;
+	}
+
+	.btn-load-font:hover {
+		background: var(--accent-primary);
+	}
+
+	.font-feedback-badge {
+		font-size: 0.75rem;
+		font-weight: 600;
+		padding: 4px 8px;
+		border-radius: var(--radius-sm);
+		margin-top: 4px;
+	}
+
+	.font-feedback-badge.success {
+		background: #DCFCE7;
+		color: #15803D;
+	}
+
+	.font-feedback-badge.error {
+		background: #FEE2E2;
+		color: #B91C1C;
+	}
+
+	.font-feedback-badge.info {
+		background: #E0F2FE;
+		color: #0369A1;
+	}
+
+	.hidden {
+		display: none !important;
+	}
+</style>

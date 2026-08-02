@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ShirtCustomizer3D from '../components/ShirtCustomizer3D.astro';
+
+// Read query params if available
+const { searchParams } = Astro.url;
+const initialColor = searchParams.get('color') || "#F4F1EA";
+const productName = searchParams.get('product') || "Camisa de Lino Semireys";
+---
+
+<Layout title="Personalizador 3D – Semireys" description="Diseña tu prenda en 3D: elige el color, coloca logos en pecho o espalda y comparte el diseño por WhatsApp.">
+	<div class="customizer-page-container">
+		<nav class="breadcrumb">
+			<a href="/" class="back-link">
+				<span class="arrow">←</span> Volver al Catálogo
+			</a>
+		</nav>
+
+		<ShirtCustomizer3D initialColor={initialColor} productName={productName} />
+	</div>
+</Layout>
+
+<style>
+	.customizer-page-container {
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 1.5rem 1.5rem 3rem;
+	}
+
+	.breadcrumb {
+		margin-bottom: 1.25rem;
+	}
+
+	.back-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+		color: var(--text-muted);
+		font-weight: 600;
+		font-size: 0.95rem;
+		transition: color 0.2s ease;
+	}
+
+	.back-link:hover {
+		color: var(--accent-primary);
+	}
+</style>

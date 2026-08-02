@@ -1,0 +1,1983 @@
+---
+import FontPreviewSelector from './FontPreviewSelector.astro';
+import LogoGallerySelector from './LogoGallerySelector.astro';
+
+interface Props {
+	initialColor?: string;
+	productName?: string;
+}
+
+const { initialColor = "#F4F1EA", productName = "Camisa de Lino Semireys" } = Astro.props;
+---
+
+<div class="customizer-3d-wrapper">
+	<!-- Canvas & 3D Viewport Container -->
+	<div class="viewport-container" id="viewport-container">
+		<canvas id="webgl-canvas"></canvas>
+
+		<!-- Loader Overlay -->
+		<div class="loading-overlay" id="loading-overlay">
+			<div class="spinner"></div>
+			<p id="loading-text">Cargando Modelo 3D de Camisa...</p>
+			<div class="progress-bar-bg">
+				<div class="progress-bar-fill" id="progress-bar"></div>
+			</div>
+		</div>
+
+		<!-- Top Left Viewport Hints & Indicators -->
+		<div class="viewport-hints">
+			<span class="hint-badge" id="hint-badge">
+				<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.84 6.72 2.25L21 3v6h-6l2.39-2.39A6.97 6.97 0 1 0 19 12h2z"/>
+				</svg>
+				Arrastra para rotar 360° • Pellizca para Zoom
+			</span>
+
+			<div class="decal-mode-indicator hidden" id="decal-mode-indicator">
+				🎯 Modo Estampar Activo: Toca en la camisa para fijar el elemento
+			</div>
+		</div>
+
+		<!-- Top Right Category Tabs Floating Pill Overlay -->
+		<div class="viewport-top-right-tabs">
+			<div class="tab-buttons">
+				<button type="button" class="tab-btn active" data-tab="color">🎨 Color</button>
+				<button type="button" class="tab-btn" data-tab="decal">🏷️ Logos</button>
+				<button type="button" class="tab-btn" data-tab="text">✍️ Texto</button>
+			</div>
+		</div>
+
+		<!-- Contextual Floating Mode Toolbar (Bottom of Viewport) -->
+		<div class="viewport-mode-toolbar">
+			<button type="button" class="mode-btn active" id="mode-rotate-btn" title="Modo Mano: Rotar 360°, Mover y Zoom">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"/>
+					<path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v6"/>
+					<path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"/>
+					<path d="M18 8a2 2 0 0 1 2 2v4a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>
+				</svg>
+				<span>✋ Girar Camisa</span>
+			</button>
+
+			<button type="button" class="mode-btn" id="mode-decal-btn" title="Modo Estampar">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<circle cx="12" cy="12" r="10"/>
+					<line x1="12" y1="8" x2="12" y2="16"/>
+					<line x1="8" y1="12" x2="16" y2="12"/>
+				</svg>
+				<span id="mode-decal-btn-label">🎯 Estampar Logo</span>
+			</button>
+
+			<button type="button" class="mode-btn" id="mode-move-btn" title="Modo Mover: Arrastra para reubicar en tiempo real">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<polyline points="5 9 2 12 5 15"></polyline>
+					<polyline points="9 5 12 2 15 5"></polyline>
+					<polyline points="15 19 12 22 9 19"></polyline>
+					<polyline points="19 9 22 12 19 15"></polyline>
+					<line x1="2" y1="12" x2="22" y2="12"></line>
+					<line x1="12" y1="2" x2="12" y2="22"></line>
+				</svg>
+				<span id="mode-move-btn-label">🖐️ Mover Logo</span>
+			</button>
+
+			<button type="button" class="mode-btn danger-mode" id="mode-remove-decals-btn" title="Modo Eliminar">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<polyline points="3 6 5 6 21 6"></polyline>
+					<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+					<line x1="10" y1="11" x2="10" y2="17"></line>
+					<line x1="14" y1="11" x2="14" y2="17"></line>
+				</svg>
+				<span id="mode-remove-btn-label">🗑️ Eliminar Logo</span>
+			</button>
+
+			<button type="button" class="mode-btn share-mode" id="mode-share-toolbar-btn" title="Tomar Foto Multángulo y Enviar por WhatsApp">
+				<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+					<circle cx="12" cy="13" r="4"></circle>
+				</svg>
+				<span>📸 Tomar Fotos y Enviar</span>
+			</button>
+		</div>
+	</div>
+
+	<!-- Customization Controls Panel with Internal Scroll -->
+	<div class="controls-panel">
+		<div class="panel-header">
+			<h2>Personalizador 3D</h2>
+			<span class="product-name-badge">{productName}</span>
+		</div>
+
+		<!-- Tab Content 1: Solid Single Shirt Color Customization -->
+		<div class="tab-content active" id="tab-color">
+			<label class="control-label">Selecciona el color del tejido:</label>
+			<div class="color-presets">
+				<button type="button" class="color-preset-btn active" data-color="#F4F1EA" data-color-name="Blanco Hueso" title="Blanco Hueso" style="background-color: #F4F1EA;"></button>
+				<button type="button" class="color-preset-btn" data-color="#E68B75" data-color-name="Salmón" title="Salmón" style="background-color: #E68B75;"></button>
+				<button type="button" class="color-preset-btn" data-color="#1B2A4A" data-color-name="Azul Marino" title="Azul Marino" style="background-color: #1B2A4A;"></button>
+				<button type="button" class="color-preset-btn" data-color="#121824" data-color-name="Negro Ébano" title="Negro Ébano" style="background-color: #121824;"></button>
+				<button type="button" class="color-preset-btn" data-color="#4A5D4E" data-color-name="Verde Oliva" title="Verde Oliva" style="background-color: #4A5D4E;"></button>
+				<button type="button" class="color-preset-btn" data-color="#D9C5B2" data-color-name="Arena Lino" title="Arena Lino" style="background-color: #D9C5B2;"></button>
+			</div>
+
+			<div class="custom-color-picker-wrapper">
+				<label for="shirt-custom-color">Color Personalizado:</label>
+				<input type="color" id="shirt-custom-color" value={initialColor} />
+			</div>
+		</div>
+
+		<!-- Tab Content 2: Logos & Emblems -->
+		<div class="tab-content" id="tab-decal">
+			<LogoGallerySelector />
+
+			<div class="decal-adjustments hidden-animated" id="decal-adjustments">
+				<div class="adjustment-header">
+					<span class="control-label">2. Ajustar Logo Seleccionado</span>
+					<span class="decal-count-badge" id="decal-count-badge">0 logos</span>
+				</div>
+				
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Tamaño Relativo a la Camisa:</span>
+						<span class="value-badge" id="logo-scale-val-badge">15% (~12 cm)</span>
+					</div>
+					<input type="range" id="decal-scale" min="0.05" max="0.35" step="0.01" value="0.15" class="custom-ui-range" />
+				</div>
+
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Rotación:</span>
+						<span class="value-badge" id="logo-rot-val-badge">0°</span>
+					</div>
+					<input type="range" id="decal-rotation" min="-180" max="180" step="5" value="0" class="custom-ui-range" />
+				</div>
+
+				<div class="decal-action-btns">
+					<button type="button" class="btn-secondary danger" id="btn-delete-selected">
+						🗑️ Eliminar Logo
+					</button>
+					<button type="button" class="btn-secondary outline" id="btn-clear-all">
+						Limpiar Todos
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Tab Content 3: Progressive Custom Text with Unclipped Sliders -->
+		<div class="tab-content" id="tab-text">
+			<!-- Stage 1: Basic Input & Color Selection -->
+			<label class="control-label">1. Escribe tu Texto:</label>
+			<input type="text" id="custom-text-input" value="SEMIREYS" placeholder="Ej. SEMIREYS, Tu Nombre, N° 10..." class="text-input-field" />
+
+			<label class="control-label">2. Color del Texto:</label>
+			<div class="text-color-presets">
+				<button type="button" class="text-color-btn active" data-color="#1B2A4A" style="background-color: #1B2A4A;"></button>
+				<button type="button" class="text-color-btn" data-color="#C27D38" style="background-color: #C27D38;"></button>
+				<button type="button" class="text-color-btn" data-color="#FFFFFF" style="background-color: #FFFFFF; border: 1px solid #CBD5E1;"></button>
+				<button type="button" class="text-color-btn" data-color="#121824" style="background-color: #121824;"></button>
+				<button type="button" class="text-color-btn" data-color="#E68B75" style="background-color: #E68B75;"></button>
+				<button type="button" class="text-color-btn" data-color="#4A5D4E" style="background-color: #4A5D4E;"></button>
+			</div>
+
+			<button type="button" class="btn-primary-action" id="btn-activate-text-mode">
+				✍️ Fijar / Estampar Texto en Camisa
+			</button>
+
+			<!-- Stage 2: Progressive Advanced Options (Unclipped & Visible) -->
+			<div class="text-advanced-options hidden-animated" id="text-advanced-options">
+				<label class="control-label">3. Anchar Letra (Espaciado):</label>
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Espaciado entre letras:</span>
+						<span class="value-badge" id="spacing-val-badge">0px</span>
+					</div>
+					<input type="range" id="text-spacing-slider" min="0" max="40" step="2" value="0" class="custom-ui-range" />
+				</div>
+
+				<label class="control-label">4. Forma del Texto (Arco vs Recto):</label>
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Curvatura:</span>
+						<span class="value-badge" id="curvature-val-badge">0° (Recto)</span>
+					</div>
+					<input type="range" id="text-curvature-slider" min="-100" max="100" step="5" value="0" class="custom-ui-range" />
+					<div class="curvature-labels">
+						<span>⤺ Cóncavo (-45°)</span>
+						<span>— Recto (0°)</span>
+						<span>⤻ Convexo (+45°)</span>
+					</div>
+				</div>
+
+				<!-- Dedicated Google Font Preview Selector Component -->
+				<FontPreviewSelector />
+
+				<div class="adjustment-header" style="margin-top: 0.5rem;">
+					<span class="control-label">5. Ajustar Tamaño y Rotación</span>
+					<span class="decal-count-badge" id="text-count-badge">0 textos</span>
+				</div>
+
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Tamaño Relativo a la Camisa:</span>
+						<span class="value-badge" id="text-scale-val-badge">30% (~24 cm)</span>
+					</div>
+					<input type="range" id="text-scale-slider" min="0.10" max="0.85" step="0.02" value="0.30" class="custom-ui-range" />
+				</div>
+
+				<div class="slider-group-column">
+					<div class="slider-header">
+						<span>Rotación:</span>
+						<span class="value-badge" id="text-rot-val-badge">0°</span>
+					</div>
+					<input type="range" id="text-rotation-slider" min="-180" max="180" step="5" value="0" class="custom-ui-range" />
+				</div>
+
+				<button type="button" class="btn-secondary danger" id="btn-delete-selected-text">
+					🗑️ Eliminar Este Texto
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	import * as THREE from 'three';
+	import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+	import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+	import { DecalGeometry } from 'three/examples/jsm/geometries/DecalGeometry.js';
+
+	interface DecalItem {
+		id: string;
+		type: 'logo' | 'text';
+		name?: string;
+		mesh: THREE.Mesh;
+		targetMesh: THREE.Mesh;
+		texture: THREE.Texture;
+		position: THREE.Vector3;
+		normal: THREE.Vector3;
+		scale: number;
+		rotation: number;
+
+		// Text specific properties
+		textString?: string;
+		textColor?: string;
+		textCurvature?: number;
+		fontFamily?: string;
+		letterSpacing?: number;
+	}
+
+	document.addEventListener('DOMContentLoaded', () => {
+		const container = document.getElementById('viewport-container');
+		const canvas = document.getElementById('webgl-canvas') as HTMLCanvasElement;
+		const loadingOverlay = document.getElementById('loading-overlay');
+		const loadingText = document.getElementById('loading-text');
+		const progressBar = document.getElementById('progress-bar');
+
+		if (!container || !canvas) return;
+
+		// 1. Scene, Camera, Renderer Setup
+		const scene = new THREE.Scene();
+		scene.background = new THREE.Color('#F8FAFC');
+
+		const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+		camera.position.set(0, 0, 2.8);
+
+		const renderer = new THREE.WebGLRenderer({
+			canvas,
+			antialias: true,
+			preserveDrawingBuffer: true
+		});
+		renderer.setSize(container.clientWidth, container.clientHeight);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+		// 2. Lighting Setup
+		const ambientLight = new THREE.AmbientLight(0xffffff, 1.4);
+		scene.add(ambientLight);
+
+		const mainLight = new THREE.DirectionalLight(0xffffff, 1.6);
+		mainLight.position.set(3, 4, 3);
+		scene.add(mainLight);
+
+		const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+		fillLight.position.set(-3, 2, -2);
+		scene.add(fillLight);
+
+		const backLight = new THREE.DirectionalLight(0xffffff, 0.5);
+		backLight.position.set(0, 3, -4);
+		scene.add(backLight);
+
+		// 3. OrbitControls Setup
+		const controls = new OrbitControls(camera, renderer.domElement);
+		controls.enableDamping = true;
+		controls.dampingFactor = 0.05;
+		controls.minDistance = 1.2;
+		controls.maxDistance = 5.0;
+		controls.maxPolarAngle = Math.PI / 1.8;
+
+		// 4. Variables & State Management
+		const shirtMeshes: THREE.Mesh[] = [];
+		const decalItems: DecalItem[] = [];
+		let selectedDecalItem: DecalItem | null = null;
+		let isDraggingDecal = false;
+
+		type CategoryTab = 'color' | 'decal' | 'text';
+		let activeCategoryTab: CategoryTab = 'color';
+
+		type Mode = 'rotate' | 'decal' | 'move' | 'remove';
+		let currentMode: Mode = 'rotate';
+
+		let currentShirtColorHex = "#F4F1EA";
+		let currentShirtColorName = "Blanco Hueso";
+
+		// Logo State
+		let activeDecalTexture: THREE.Texture | null = null;
+		let activeDecalName = "Logo SEMIREYS";
+		let currentDecalScale = 0.15;
+		let currentDecalRotation = 0;
+
+		// Text State
+		let currentTextString = "SEMIREYS";
+		let currentTextColor = "#1B2A4A";
+		let currentTextCurvature = 0; // -100 to +100
+		let currentFontFamily = 'Plus Jakarta Sans';
+		let currentTextLetterSpacing = 0; // 0 to 40px
+		let currentTextScale = 0.30;
+		let currentTextRotation = 0;
+		let activeTextTexture: THREE.Texture | null = null;
+
+		const raycaster = new THREE.Raycaster();
+		const mouse = new THREE.Vector2();
+
+		// UI Elements
+		const modeRotateBtn = document.getElementById('mode-rotate-btn');
+		const modeDecalBtn = document.getElementById('mode-decal-btn');
+		const modeMoveBtn = document.getElementById('mode-move-btn');
+		const modeRemoveBtn = document.getElementById('mode-remove-decals-btn');
+		const modeShareToolbarBtn = document.getElementById('mode-share-toolbar-btn');
+
+		const modeDecalBtnLabel = document.getElementById('mode-decal-btn-label');
+		const modeMoveBtnLabel = document.getElementById('mode-move-btn-label');
+		const modeRemoveBtnLabel = document.getElementById('mode-remove-btn-label');
+
+		const decalIndicator = document.getElementById('decal-mode-indicator');
+		const hintBadge = document.getElementById('hint-badge');
+
+		// Logo & Text Adjustments UI Containers
+		const decalAdjustments = document.getElementById('decal-adjustments');
+		const decalCountBadge = document.getElementById('decal-count-badge');
+		const textAdvancedOptions = document.getElementById('text-advanced-options');
+		const textCountBadge = document.getElementById('text-count-badge');
+
+		// Live Badge Elements
+		const logoScaleValBadge = document.getElementById('logo-scale-val-badge');
+		const logoRotValBadge = document.getElementById('logo-rot-val-badge');
+		const textScaleValBadge = document.getElementById('text-scale-val-badge');
+		const textRotValBadge = document.getElementById('text-rot-val-badge');
+
+		function formatScaleBadge(scaleVal: number): string {
+			const pct = Math.round(scaleVal * 100);
+			const cm = Math.round(scaleVal * 80);
+			return `${pct}% (~${cm} cm)`;
+		}
+
+		// ----------------------------------------------------
+		// 🎨 High-Res Canvas Text Generator (1024x1024, Fonts & Letter Spacing)
+		// ----------------------------------------------------
+		function generateTextCanvasTexture(
+			text: string, 
+			color: string, 
+			curvature: number, 
+			fontFamily: string = 'Plus Jakarta Sans',
+			letterSpacing: number = 0
+		): THREE.CanvasTexture {
+			const textCanvas = document.createElement('canvas');
+			textCanvas.width = 1024;
+			textCanvas.height = 1024;
+			const ctx = textCanvas.getContext('2d');
+
+			if (!ctx) return new THREE.CanvasTexture(textCanvas);
+
+			ctx.clearRect(0, 0, 1024, 1024);
+
+			if (!text || text.trim() === '') {
+				return new THREE.CanvasTexture(textCanvas);
+			}
+
+			// FLIP HORIZONTALLY IN CANVAS SPACE SO DECALGEOMETRY PROJECTS RIGHT-SIDE UP!
+			ctx.save();
+			ctx.translate(1024, 0);
+			ctx.scale(-1, 1);
+
+			const fontSize = 110;
+			const cleanFontFamily = fontFamily.includes(',') ? fontFamily : `"${fontFamily}", sans-serif`;
+			ctx.font = `900 ${fontSize}px ${cleanFontFamily}`;
+			ctx.fillStyle = color;
+			ctx.textAlign = 'center';
+			ctx.textBaseline = 'middle';
+
+			const centerX = 512;
+			const centerY = 512;
+
+			if (Math.abs(curvature) < 3) {
+				// Straight Line Text with optional Letter Spacing / Anchado
+				if (letterSpacing > 0) {
+					const charWidths = Array.from(text).map(c => ctx.measureText(c).width + letterSpacing);
+					const totalWidth = charWidths.reduce((a, b) => a + b, 0) - letterSpacing;
+					let startX = centerX - (totalWidth / 2);
+
+					Array.from(text).forEach((char, i) => {
+						const w = charWidths[i];
+						ctx.fillText(char, startX + (w / 2) - (letterSpacing / 2), centerY);
+						startX += w;
+					});
+				} else {
+					ctx.fillText(text, centerX, centerY);
+				}
+			} else {
+				// Curved Arc Text (Concave vs Convex) with Letter Spacing
+				const absCurv = Math.abs(curvature);
+				const radius = 1200 - (absCurv * 8.5);
+				const isConcave = curvature > 0;
+				const arcCenterY = isConcave ? centerY + radius - 80 : centerY - radius + 80;
+
+				const charAngleStep = 0.07 + (letterSpacing * 0.003) + (fontSize * 0.0003);
+				const totalAngle = text.length * charAngleStep;
+				let startAngle = isConcave ? -totalAngle / 2 : totalAngle / 2;
+
+				for (let i = 0; i < text.length; i++) {
+					const char = text[i];
+					const angle = startAngle + (isConcave ? (i * charAngleStep) : (-i * charAngleStep));
+
+					ctx.save();
+					ctx.translate(centerX, arcCenterY);
+					ctx.rotate(angle);
+					ctx.translate(0, isConcave ? -radius : radius);
+					ctx.fillText(char, 0, 0);
+					ctx.restore();
+				}
+			}
+
+			ctx.restore(); // Restore canvas transformation
+
+			const texture = new THREE.CanvasTexture(textCanvas);
+			texture.colorSpace = THREE.SRGBColorSpace;
+			texture.needsUpdate = true;
+			return texture;
+		}
+
+		// Update Contextual Labels on Bottom Toolbar depending on active tab
+		function updateToolbarContext() {
+			if (activeCategoryTab === 'text') {
+				if (modeDecalBtnLabel) modeDecalBtnLabel.textContent = '✍️ Estampar Texto';
+				if (modeMoveBtnLabel) modeMoveBtnLabel.textContent = '🖐️ Mover Texto';
+				if (modeRemoveBtnLabel) modeRemoveBtnLabel.textContent = '🗑️ Eliminar Texto';
+			} else {
+				if (modeDecalBtnLabel) modeDecalBtnLabel.textContent = '🎯 Estampar Logo';
+				if (modeMoveBtnLabel) modeMoveBtnLabel.textContent = '🖐️ Mover Logo';
+				if (modeRemoveBtnLabel) modeRemoveBtnLabel.textContent = '🗑️ Eliminar Logo';
+			}
+		}
+
+		function setInteractionMode(mode: Mode) {
+			currentMode = mode;
+			isDraggingDecal = false;
+
+			[modeRotateBtn, modeDecalBtn, modeMoveBtn, modeRemoveBtn].forEach(btn => btn?.classList.remove('active'));
+
+			if (mode === 'rotate') {
+				controls.enabled = true;
+				canvas.style.cursor = 'grab';
+				modeRotateBtn?.classList.add('active');
+				if (decalIndicator) decalIndicator.classList.add('hidden');
+				if (hintBadge) hintBadge.classList.remove('hidden');
+			} else if (mode === 'decal') {
+				controls.enabled = false;
+				canvas.style.cursor = 'crosshair';
+				modeDecalBtn?.classList.add('active');
+				if (decalIndicator) {
+					decalIndicator.textContent = activeCategoryTab === 'text' 
+						? '✍️ Modo Estampar Texto Activo: Toca la camisa para colocar el texto'
+						: '🎯 Modo Estampar Logo Activo: Toca la camisa para fijar el logo';
+					decalIndicator.classList.remove('hidden');
+				}
+				if (hintBadge) hintBadge.classList.add('hidden');
+			} else if (mode === 'move') {
+				controls.enabled = false;
+				canvas.style.cursor = 'move';
+				modeMoveBtn?.classList.add('active');
+				if (decalIndicator) {
+					decalIndicator.textContent = activeCategoryTab === 'text'
+						? '🖐️ Modo Mover Texto: Haz clic y arrastra para reubicar tu texto (los logos se mantienen fijos)'
+						: '🖐️ Modo Mover Logo: Haz clic y arrastra para reubicar tu logo (los textos se mantienen fijos)';
+					decalIndicator.classList.remove('hidden');
+				}
+				if (hintBadge) hintBadge.classList.add('hidden');
+			} else if (mode === 'remove') {
+				controls.enabled = false;
+				canvas.style.cursor = 'pointer';
+				modeRemoveBtn?.classList.add('active');
+				if (decalIndicator) {
+					decalIndicator.textContent = activeCategoryTab === 'text'
+						? '🗑️ Modo Eliminar Texto: Toca directamente el texto que desees quitar'
+						: '🗑️ Modo Eliminar Logo: Toca directamente el logo que desees quitar';
+					decalIndicator.classList.remove('hidden');
+				}
+				if (hintBadge) hintBadge.classList.add('hidden');
+			}
+		}
+
+		// Update UI Count & 0.30s Animated Adjustments Panels for Logos vs Progressive Text
+		function updateDecalUI() {
+			const logoItems = decalItems.filter(d => d.type === 'logo');
+			const textItems = decalItems.filter(d => d.type === 'text');
+
+			if (decalCountBadge) decalCountBadge.textContent = `${logoItems.length} logo${logoItems.length !== 1 ? 's' : ''}`;
+			if (textCountBadge) textCountBadge.textContent = `${textItems.length} texto${textItems.length !== 1 ? 's' : ''}`;
+
+			// 0.30s Animated slide for logo adjustments
+			if (decalAdjustments) {
+				if (logoItems.length > 0 && activeCategoryTab === 'decal') {
+					decalAdjustments.classList.remove('hidden-animated');
+				} else {
+					decalAdjustments.classList.add('hidden-animated');
+				}
+			}
+
+			// 0.30s Animated progressive slide for text advanced options & adjustments
+			if (textAdvancedOptions) {
+				if ((textItems.length > 0 || selectedDecalItem?.type === 'text') && activeCategoryTab === 'text') {
+					textAdvancedOptions.classList.remove('hidden-animated');
+				} else {
+					textAdvancedOptions.classList.add('hidden-animated');
+				}
+			}
+		}
+
+		// Rebuild Decal Mesh Geometry on scale, rotation or position update
+		function updateDecalMeshGeometry(item: DecalItem) {
+			const orientation = new THREE.Euler();
+			const rotationMatrix = new THREE.Matrix4();
+			rotationMatrix.lookAt(item.position, item.position.clone().add(item.normal), new THREE.Vector3(0, 1, 0));
+			orientation.setFromRotationMatrix(rotationMatrix);
+			orientation.z += THREE.MathUtils.degToRad(item.rotation);
+
+			const sizeVector = new THREE.Vector3(item.scale, item.scale, item.scale);
+			
+			// Replace geometry
+			item.mesh.geometry.dispose();
+			item.mesh.geometry = new DecalGeometry(item.targetMesh, item.position, orientation, sizeVector);
+		}
+
+		// Delete a specific decal item
+		function deleteDecalItem(itemToDelete: DecalItem) {
+			scene.remove(itemToDelete.mesh);
+			itemToDelete.mesh.geometry.dispose();
+			if (Array.isArray(itemToDelete.mesh.material)) {
+				itemToDelete.mesh.material.forEach(m => m.dispose());
+			} else {
+				itemToDelete.mesh.material.dispose();
+			}
+
+			const idx = decalItems.findIndex(d => d.id === itemToDelete.id);
+			if (idx !== -1) decalItems.splice(idx, 1);
+
+			if (selectedDecalItem?.id === itemToDelete.id) {
+				const categoryItems = decalItems.filter(d => d.type === activeCategoryTab);
+				selectedDecalItem = categoryItems.length > 0 ? categoryItems[categoryItems.length - 1] : null;
+			}
+
+			updateDecalUI();
+		}
+
+		function clearAllDecals() {
+			[...decalItems].forEach(item => deleteDecalItem(item));
+			selectedDecalItem = null;
+			activeDecalTexture = null;
+
+			const decalBtns = document.querySelectorAll('.decal-item-btn');
+			decalBtns.forEach(b => b.classList.remove('active'));
+
+			setInteractionMode('rotate');
+		}
+
+		// Toolbar Mode Button Listeners
+		modeRotateBtn?.addEventListener('click', () => setInteractionMode('rotate'));
+		modeDecalBtn?.addEventListener('click', () => {
+			if (activeCategoryTab === 'text') {
+				activeTextTexture = generateTextCanvasTexture(currentTextString, currentTextColor, currentTextCurvature, currentFontFamily, currentTextLetterSpacing);
+				setInteractionMode('decal');
+			} else {
+				if (!activeDecalTexture) {
+					const firstDecalBtn = document.querySelector('.decal-item-btn') as HTMLButtonElement | null;
+					if (firstDecalBtn) firstDecalBtn.click();
+				} else {
+					setInteractionMode('decal');
+				}
+			}
+		});
+		modeMoveBtn?.addEventListener('click', () => setInteractionMode('move'));
+		modeRemoveBtn?.addEventListener('click', () => setInteractionMode('remove'));
+		modeShareToolbarBtn?.addEventListener('click', () => triggerSmartMultiAngleShare());
+
+		// Helper function to change color across ALL shirt meshes
+		function setShirtColor(colorHex: string, colorName?: string) {
+			currentShirtColorHex = colorHex;
+			if (colorName) currentShirtColorName = colorName;
+
+			const targetColor = new THREE.Color(colorHex);
+			shirtMeshes.forEach((mesh) => {
+				if (!mesh.material) return;
+				const apply = (mat: THREE.Material) => {
+					if ('map' in mat && (mat as THREE.MeshStandardMaterial).map) {
+						(mat as THREE.MeshStandardMaterial).map?.dispose();
+						(mat as THREE.MeshStandardMaterial).map = null;
+					}
+					if ('color' in mat) {
+						(mat as THREE.MeshStandardMaterial).color.copy(targetColor);
+						mat.needsUpdate = true;
+					}
+				};
+
+				if (Array.isArray(mesh.material)) {
+					mesh.material.forEach((mat) => apply(mat));
+				} else {
+					apply(mesh.material);
+				}
+			});
+		}
+
+		// 5. Load GLTF Model & Clone Materials for All 9 Child Sub-Meshes
+		const gltfLoader = new GLTFLoader();
+		gltfLoader.load(
+			'/models/camisa.glb',
+			(gltf) => {
+				const model = gltf.scene;
+
+				const box = new THREE.Box3().setFromObject(model);
+				const center = box.getCenter(new THREE.Vector3());
+				const size = box.getSize(new THREE.Vector3());
+
+				const maxDim = Math.max(size.x, size.y, size.z);
+				const scaleFactor = 1.6 / maxDim;
+				model.scale.setScalar(scaleFactor);
+				model.position.sub(center.multiplyScalar(scaleFactor));
+
+				scene.add(model);
+
+				model.traverse((child) => {
+					if ((child as THREE.Mesh).isMesh) {
+						const mesh = child as THREE.Mesh;
+						if (mesh.material) {
+							if (Array.isArray(mesh.material)) {
+								mesh.material = mesh.material.map(m => m.clone());
+							} else {
+								mesh.material = mesh.material.clone();
+							}
+						}
+						shirtMeshes.push(mesh);
+					}
+				});
+
+				setShirtColor("#F4F1EA", "Blanco Hueso");
+				setInteractionMode('rotate');
+
+				if (loadingOverlay) {
+					loadingOverlay.style.opacity = '0';
+					setTimeout(() => loadingOverlay.style.display = 'none', 300);
+				}
+			},
+			(progress) => {
+				if (progress.lengthComputable && progressBar && loadingText) {
+					const percent = Math.round((progress.loaded / progress.total) * 100);
+					progressBar.style.width = `${percent}%`;
+					loadingText.textContent = `Cargando Modelo 3D (${percent}%)...`;
+				}
+			},
+			(error) => {
+				console.error('Error al cargar modelo 3D:', error);
+				if (loadingText) loadingText.textContent = 'Error al cargar el modelo 3D.';
+			}
+		);
+
+		// 6. Color Picker Event Listeners
+		const colorPresetBtns = document.querySelectorAll('.color-preset-btn');
+		const customColorInput = document.getElementById('shirt-custom-color') as HTMLInputElement | null;
+
+		colorPresetBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				colorPresetBtns.forEach(b => b.classList.remove('active'));
+				btn.classList.add('active');
+				const color = btn.getAttribute('data-color');
+				const name = btn.getAttribute('data-color-name') || "Personalizado";
+				if (color) setShirtColor(color, name);
+			});
+		});
+
+		if (customColorInput) {
+			customColorInput.addEventListener('input', (e) => {
+				const color = (e.target as HTMLInputElement).value;
+				setShirtColor(color, "Personalizado");
+			});
+		}
+
+		// 7. Decal Selection & Custom SVG Upload Handler with Validation
+		const textureLoader = new THREE.TextureLoader();
+		const decalGalleryContainer = document.getElementById('decal-gallery-container');
+		const customSvgFileInput = document.getElementById('custom-svg-file-input') as HTMLInputElement | null;
+		const btnTriggerSvgUpload = document.getElementById('btn-trigger-svg-upload');
+		const svgUploadStatus = document.getElementById('svg-upload-status');
+
+		function attachDecalBtnListener(btn: Element) {
+			btn.addEventListener('click', () => {
+				const allDecalBtns = document.querySelectorAll('.decal-item-btn');
+				allDecalBtns.forEach(b => b.classList.remove('active'));
+				btn.classList.add('active');
+
+				const url = btn.getAttribute('data-decal-url');
+				const nameSpan = btn.querySelector('span');
+				if (nameSpan) activeDecalName = nameSpan.textContent || "Emblema";
+
+				if (!url) return;
+
+				textureLoader.load(url, (texture) => {
+					texture.colorSpace = THREE.SRGBColorSpace;
+					texture.wrapS = THREE.RepeatWrapping;
+					texture.repeat.x = -1; // Un-flip SVG logos so they project right-side up!
+					activeDecalTexture = texture;
+					setInteractionMode('decal');
+				});
+			});
+		}
+
+		// Attach listeners to default preset decal buttons
+		const presetDecalBtns = document.querySelectorAll('.decal-item-btn');
+		presetDecalBtns.forEach(btn => attachDecalBtnListener(btn));
+
+		// Trigger file input dialog
+		btnTriggerSvgUpload?.addEventListener('click', () => {
+			customSvgFileInput?.click();
+		});
+
+		// Custom SVG File Upload Validation & Loading
+		customSvgFileInput?.addEventListener('change', async (e) => {
+			const files = (e.target as HTMLInputElement).files;
+			if (!files || files.length === 0) return;
+
+			const file = files[0];
+
+			// 1. Extension & MIME Type Check
+			const isSvgExtension = file.name.toLowerCase().endsWith('.svg');
+			const isSvgMime = file.type === 'image/svg+xml' || file.type === 'image/svg';
+
+			if (!isSvgExtension && !isSvgMime) {
+				alert('⚠️ Archivo no válido. Por favor selecciona únicamente un archivo vectorial en formato .svg');
+				if (svgUploadStatus) svgUploadStatus.textContent = '❌ Error: El archivo no tiene extensión .svg';
+				customSvgFileInput.value = '';
+				return;
+			}
+
+			// 2. Deep XML Content Validation (Verify file text actually contains <svg tag)
+			try {
+				const text = await file.text();
+				const cleanText = text.trim().toLowerCase();
+
+				if (!cleanText.includes('<svg')) {
+					alert('⚠️ El contenido del archivo no es un gráfico vectorial SVG válido.');
+					if (svgUploadStatus) svgUploadStatus.textContent = '❌ Error: Estructura XML <svg> no encontrada';
+					customSvgFileInput.value = '';
+					return;
+				}
+
+				// Create Object URL for SVG blob
+				const svgUrl = URL.createObjectURL(file);
+				activeDecalName = file.name;
+
+				// Dynamically add new custom SVG button to gallery
+				if (decalGalleryContainer) {
+					const newBtn = document.createElement('button');
+					newBtn.type = 'button';
+					newBtn.className = 'decal-item-btn custom-user-svg active';
+					newBtn.setAttribute('data-decal-url', svgUrl);
+					newBtn.innerHTML = `
+						<img src="${svgUrl}" alt="${file.name}" />
+						<span>${file.name.length > 12 ? file.name.substring(0, 10) + '...' : file.name}</span>
+					`;
+
+					decalGalleryContainer.appendChild(newBtn);
+					attachDecalBtnListener(newBtn);
+
+					// Load texture immediately
+					textureLoader.load(svgUrl, (texture) => {
+						texture.colorSpace = THREE.SRGBColorSpace;
+						texture.wrapS = THREE.RepeatWrapping;
+						texture.repeat.x = -1;
+						activeDecalTexture = texture;
+						setInteractionMode('decal');
+					});
+				}
+
+				if (svgUploadStatus) {
+					svgUploadStatus.textContent = `✅ Logo "${file.name}" cargado con éxito`;
+				}
+			} catch (err) {
+				console.error('Error al leer archivo SVG:', err);
+				alert('⚠️ Ocurrió un error al procesar el archivo SVG.');
+				if (svgUploadStatus) svgUploadStatus.textContent = '❌ Error al procesar el archivo.';
+			}
+
+			// Reset input so user can re-select same file if desired
+			customSvgFileInput.value = '';
+		});
+
+		// ----------------------------------------------------
+		// ✍️ TEXT CONTROLS LISTENERS (Input, Fonts, Spacing, Curvatura)
+		// ----------------------------------------------------
+		const customTextInput = document.getElementById('custom-text-input') as HTMLInputElement | null;
+		const textColorBtns = document.querySelectorAll('.text-color-btn');
+		const textSpacingSlider = document.getElementById('text-spacing-slider') as HTMLInputElement | null;
+		const spacingValBadge = document.getElementById('spacing-val-badge');
+		const textCurvatureSlider = document.getElementById('text-curvature-slider') as HTMLInputElement | null;
+		const curvatureValBadge = document.getElementById('curvature-val-badge');
+		const btnActivateTextMode = document.getElementById('btn-activate-text-mode');
+
+		function updateActiveTextDecalTexture() {
+			if (selectedDecalItem && selectedDecalItem.type === 'text') {
+				selectedDecalItem.textString = currentTextString;
+				selectedDecalItem.textColor = currentTextColor;
+				selectedDecalItem.textCurvature = currentTextCurvature;
+				selectedDecalItem.fontFamily = currentFontFamily;
+				selectedDecalItem.letterSpacing = currentTextLetterSpacing;
+
+				selectedDecalItem.texture = generateTextCanvasTexture(
+					currentTextString,
+					currentTextColor,
+					currentTextCurvature,
+					currentFontFamily,
+					currentTextLetterSpacing
+				);
+				(selectedDecalItem.mesh.material as THREE.MeshStandardMaterial).map = selectedDecalItem.texture;
+				(selectedDecalItem.mesh.material as THREE.MeshStandardMaterial).needsUpdate = true;
+			}
+		}
+
+		// Listen to custom font selection event from FontPreviewSelector.astro component
+		window.addEventListener('font-selected', (e: Event) => {
+			const customEvt = e as CustomEvent<{ fontFamily: string }>;
+			if (customEvt.detail && customEvt.detail.fontFamily) {
+				currentFontFamily = customEvt.detail.fontFamily;
+				updateActiveTextDecalTexture();
+			}
+		});
+
+		if (customTextInput) {
+			customTextInput.addEventListener('input', (e) => {
+				currentTextString = (e.target as HTMLInputElement).value;
+				updateActiveTextDecalTexture();
+			});
+		}
+
+		textColorBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				textColorBtns.forEach(b => b.classList.remove('active'));
+				btn.classList.add('active');
+				const color = btn.getAttribute('data-color');
+				if (color) {
+					currentTextColor = color;
+					updateActiveTextDecalTexture();
+				}
+			});
+		});
+
+		if (textSpacingSlider) {
+			textSpacingSlider.addEventListener('input', (e) => {
+				const val = parseInt((e.target as HTMLInputElement).value, 10);
+				currentTextLetterSpacing = val;
+				if (spacingValBadge) spacingValBadge.textContent = `${val}px`;
+				updateActiveTextDecalTexture();
+			});
+		}
+
+		if (textCurvatureSlider) {
+			textCurvatureSlider.addEventListener('input', (e) => {
+				const val = parseInt((e.target as HTMLInputElement).value, 10);
+				currentTextCurvature = val;
+
+				if (curvatureValBadge) {
+					if (Math.abs(val) < 3) {
+						curvatureValBadge.textContent = '0° (Línea Recta)';
+					} else if (val > 0) {
+						curvatureValBadge.textContent = `+${val}° (Cóncavo ⤺)`;
+					} else {
+						curvatureValBadge.textContent = `${val}° (Convexo ⤻)`;
+					}
+				}
+
+				updateActiveTextDecalTexture();
+			});
+		}
+
+		if (btnActivateTextMode) {
+			btnActivateTextMode.addEventListener('click', () => {
+				activeTextTexture = generateTextCanvasTexture(currentTextString, currentTextColor, currentTextCurvature, currentFontFamily, currentTextLetterSpacing);
+				setInteractionMode('decal');
+				if (textAdvancedOptions) textAdvancedOptions.classList.remove('hidden-animated');
+			});
+		}
+
+		// 8. REAL-TIME CONTINUOUS DRAG POINTER EVENTS
+		function updateDecalFromPointer(event: PointerEvent) {
+			if (shirtMeshes.length === 0) return;
+
+			const rect = renderer.domElement.getBoundingClientRect();
+			mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+			mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+			raycaster.setFromCamera(mouse, camera);
+
+			// Filter items scoped to active tab ('logo' vs 'text')
+			const scopedDecalItems = decalItems.filter(d => d.type === (activeCategoryTab === 'text' ? 'text' : 'logo'));
+			const scopedDecalMeshes = scopedDecalItems.map(d => d.mesh);
+
+			const intersectsDecals = raycaster.intersectObjects(scopedDecalMeshes);
+			const intersectsShirt = raycaster.intersectObjects(shirtMeshes);
+
+			// A) REMOVE MODE: Tapping scoped item deletes ONLY that item
+			if (currentMode === 'remove' && event.type === 'pointerdown') {
+				if (intersectsDecals.length > 0) {
+					const hitDecalMesh = intersectsDecals[0].object as THREE.Mesh;
+					const itemToDelete = scopedDecalItems.find(d => d.mesh === hitDecalMesh);
+					if (itemToDelete) {
+						deleteDecalItem(itemToDelete);
+					}
+				}
+				return;
+			}
+
+			// B) MOVE MODE: Smooth 1:1 Real-time Dragging (Scoped ONLY to active category!)
+			if (currentMode === 'move') {
+				// Select item if clicked or pick latest scoped item
+				if (!selectedDecalItem || selectedDecalItem.type !== (activeCategoryTab === 'text' ? 'text' : 'logo')) {
+					if (intersectsDecals.length > 0) {
+						const hitDecalMesh = intersectsDecals[0].object as THREE.Mesh;
+						selectedDecalItem = scopedDecalItems.find(d => d.mesh === hitDecalMesh) || scopedDecalItems[scopedDecalItems.length - 1];
+					} else if (scopedDecalItems.length > 0) {
+						selectedDecalItem = scopedDecalItems[scopedDecalItems.length - 1];
+					}
+				}
+
+				// Move selected scoped decal in real time on shirt surface
+				if (selectedDecalItem && intersectsShirt.length > 0) {
+					const intersection = intersectsShirt[0];
+					const targetMesh = intersection.object as THREE.Mesh;
+					const position = intersection.point;
+					const normal = intersection.face ? intersection.face.normal.clone() : new THREE.Vector3(0, 0, 1);
+					normal.transformDirection(targetMesh.matrixWorld);
+
+					selectedDecalItem.targetMesh = targetMesh;
+					selectedDecalItem.position = position;
+					selectedDecalItem.normal = normal;
+					updateDecalMeshGeometry(selectedDecalItem);
+
+					if (selectedDecalItem.type === 'text') {
+						const textScaleInput = document.getElementById('text-scale-slider') as HTMLInputElement | null;
+						const textRotInput = document.getElementById('text-rotation-slider') as HTMLInputElement | null;
+						if (textScaleInput) {
+							textScaleInput.value = selectedDecalItem.scale.toString();
+							if (textScaleValBadge) textScaleValBadge.textContent = formatScaleBadge(selectedDecalItem.scale);
+						}
+						if (textRotInput) {
+							textRotInput.value = selectedDecalItem.rotation.toString();
+							if (textRotValBadge) textRotValBadge.textContent = `${selectedDecalItem.rotation}°`;
+						}
+					} else {
+						if (scaleInput) {
+							scaleInput.value = selectedDecalItem.scale.toString();
+							if (logoScaleValBadge) logoScaleValBadge.textContent = formatScaleBadge(selectedDecalItem.scale);
+						}
+						if (rotationInput) {
+							rotationInput.value = selectedDecalItem.rotation.toString();
+							if (logoRotValBadge) logoRotValBadge.textContent = `${selectedDecalItem.rotation}°`;
+						}
+					}
+				}
+				return;
+			}
+
+			// C) DECAL / TEXT PLACEMENT MODE
+			if (currentMode === 'decal' && event.type === 'pointerdown' && intersectsShirt.length > 0) {
+				const isTextMode = activeCategoryTab === 'text';
+				const textureToUse = isTextMode 
+					? (activeTextTexture || generateTextCanvasTexture(currentTextString, currentTextColor, currentTextCurvature, currentFontFamily, currentTextLetterSpacing)) 
+					: activeDecalTexture;
+
+				if (!textureToUse) return;
+
+				const intersection = intersectsShirt[0];
+				const targetMesh = intersection.object as THREE.Mesh;
+				const position = intersection.point;
+				const normal = intersection.face ? intersection.face.normal.clone() : new THREE.Vector3(0, 0, 1);
+				normal.transformDirection(targetMesh.matrixWorld);
+
+				const scaleToUse = isTextMode ? currentTextScale : currentDecalScale;
+				const rotationToUse = isTextMode ? currentTextRotation : currentDecalRotation;
+
+				const orientation = new THREE.Euler();
+				const rotationMatrix = new THREE.Matrix4();
+				rotationMatrix.lookAt(position, position.clone().add(normal), new THREE.Vector3(0, 1, 0));
+				orientation.setFromRotationMatrix(rotationMatrix);
+				orientation.z += THREE.MathUtils.degToRad(rotationToUse);
+
+				const sizeVector = new THREE.Vector3(scaleToUse, scaleToUse, scaleToUse);
+				const decalGeo = new DecalGeometry(targetMesh, position, orientation, sizeVector);
+
+				const decalMat = new THREE.MeshStandardMaterial({
+					map: textureToUse,
+					transparent: true,
+					depthTest: true,
+					depthWrite: false,
+					polygonOffset: true,
+					polygonOffsetFactor: -4,
+					roughness: 0.8
+				});
+
+				const decalMesh = new THREE.Mesh(decalGeo, decalMat);
+				scene.add(decalMesh);
+
+				const newItem: DecalItem = {
+					id: `decal_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+					type: isTextMode ? 'text' : 'logo',
+					name: isTextMode ? `Texto "${currentTextString}"` : activeDecalName,
+					mesh: decalMesh,
+					targetMesh,
+					texture: textureToUse,
+					position,
+					normal,
+					scale: scaleToUse,
+					rotation: rotationToUse,
+					textString: isTextMode ? currentTextString : undefined,
+					textColor: isTextMode ? currentTextColor : undefined,
+					textCurvature: isTextMode ? currentTextCurvature : undefined,
+					fontFamily: isTextMode ? currentFontFamily : undefined,
+					letterSpacing: isTextMode ? currentTextLetterSpacing : undefined
+				};
+
+				decalItems.push(newItem);
+				selectedDecalItem = newItem;
+				updateDecalUI();
+			}
+		}
+
+		renderer.domElement.addEventListener('pointerdown', (e) => {
+			if (currentMode === 'rotate') return;
+			isDraggingDecal = true;
+			updateDecalFromPointer(e);
+		});
+
+		renderer.domElement.addEventListener('pointermove', (e) => {
+			if (currentMode === 'move' && isDraggingDecal) {
+				updateDecalFromPointer(e);
+			}
+		});
+
+		const stopDragging = () => { isDraggingDecal = false; };
+		renderer.domElement.addEventListener('pointerup', stopDragging);
+		renderer.domElement.addEventListener('pointerleave', stopDragging);
+
+		// Logo scale & rotation sliders with live badge updates
+		const scaleInput = document.getElementById('decal-scale') as HTMLInputElement | null;
+		const rotationInput = document.getElementById('decal-rotation') as HTMLInputElement | null;
+		const deleteSelectedBtn = document.getElementById('btn-delete-selected');
+		const clearAllBtn = document.getElementById('btn-clear-all');
+
+		if (scaleInput) {
+			scaleInput.addEventListener('input', (e) => {
+				const val = parseFloat((e.target as HTMLInputElement).value);
+				currentDecalScale = val;
+				if (logoScaleValBadge) logoScaleValBadge.textContent = formatScaleBadge(val);
+				if (selectedDecalItem && selectedDecalItem.type === 'logo') {
+					selectedDecalItem.scale = val;
+					updateDecalMeshGeometry(selectedDecalItem);
+				}
+			});
+		}
+		if (rotationInput) {
+			rotationInput.addEventListener('input', (e) => {
+				const val = parseFloat((e.target as HTMLInputElement).value);
+				currentDecalRotation = val;
+				if (logoRotValBadge) logoRotValBadge.textContent = `${val}°`;
+				if (selectedDecalItem && selectedDecalItem.type === 'logo') {
+					selectedDecalItem.rotation = val;
+					updateDecalMeshGeometry(selectedDecalItem);
+				}
+			});
+		}
+
+		deleteSelectedBtn?.addEventListener('click', () => {
+			if (selectedDecalItem && selectedDecalItem.type === 'logo') {
+				deleteDecalItem(selectedDecalItem);
+			} else {
+				const logoItems = decalItems.filter(d => d.type === 'logo');
+				if (logoItems.length > 0) deleteDecalItem(logoItems[logoItems.length - 1]);
+			}
+		});
+
+		clearAllBtn?.addEventListener('click', () => clearAllDecals());
+
+		// Text Scale & Rotation Sliders & Delete with live badge updates
+		const textScaleSlider = document.getElementById('text-scale-slider') as HTMLInputElement | null;
+		const textRotationSlider = document.getElementById('text-rotation-slider') as HTMLInputElement | null;
+		const btnDeleteSelectedText = document.getElementById('btn-delete-selected-text');
+
+		if (textScaleSlider) {
+			textScaleSlider.addEventListener('input', (e) => {
+				const val = parseFloat((e.target as HTMLInputElement).value);
+				currentTextScale = val;
+				if (textScaleValBadge) textScaleValBadge.textContent = formatScaleBadge(val);
+				if (selectedDecalItem && selectedDecalItem.type === 'text') {
+					selectedDecalItem.scale = val;
+					updateDecalMeshGeometry(selectedDecalItem);
+				}
+			});
+		}
+		if (textRotationSlider) {
+			textRotationSlider.addEventListener('input', (e) => {
+				const val = parseFloat((e.target as HTMLInputElement).value);
+				currentTextRotation = val;
+				if (textRotValBadge) textRotValBadge.textContent = `${val}°`;
+				if (selectedDecalItem && selectedDecalItem.type === 'text') {
+					selectedDecalItem.rotation = val;
+					updateDecalMeshGeometry(selectedDecalItem);
+				}
+			});
+		}
+
+		btnDeleteSelectedText?.addEventListener('click', () => {
+			if (selectedDecalItem && selectedDecalItem.type === 'text') {
+				deleteDecalItem(selectedDecalItem);
+			} else {
+				const textItems = decalItems.filter(d => d.type === 'text');
+				if (textItems.length > 0) deleteDecalItem(textItems[textItems.length - 1]);
+			}
+		});
+
+		// 9. Tab Switcher Listener (Color vs Logo vs Text)
+		const tabBtns = document.querySelectorAll('.tab-btn');
+		const tabContents = document.querySelectorAll('.tab-content');
+
+		tabBtns.forEach(btn => {
+			btn.addEventListener('click', () => {
+				const target = btn.getAttribute('data-tab') as CategoryTab;
+				if (!target) return;
+
+				tabBtns.forEach(b => b.classList.remove('active'));
+				tabContents.forEach(c => c.classList.remove('active'));
+
+				btn.classList.add('active');
+				const content = document.getElementById(`tab-${target}`);
+				if (content) content.classList.add('active');
+
+				activeCategoryTab = target;
+
+				// Update Contextual Toolbar Labels (Logo vs Text)
+				updateToolbarContext();
+				updateDecalUI();
+
+				if (target === 'color') {
+					setInteractionMode('rotate');
+				} else if (target === 'text') {
+					activeTextTexture = generateTextCanvasTexture(currentTextString, currentTextColor, currentTextCurvature, currentFontFamily, currentTextLetterSpacing);
+					const textItems = decalItems.filter(d => d.type === 'text');
+					if (textItems.length > 0) {
+						selectedDecalItem = textItems[textItems.length - 1];
+					}
+				} else if (target === 'decal') {
+					const logoItems = decalItems.filter(d => d.type === 'logo');
+					if (logoItems.length > 0) {
+						selectedDecalItem = logoItems[logoItems.length - 1];
+					}
+				}
+			});
+		});
+
+		// ----------------------------------------------------
+		// 📸 SMART 4-VIEW MULTI-ANGLE CAPTURE & WHATSAPP REPORT
+		// ----------------------------------------------------
+		async function captureSmartMultiAngleGrid(): Promise<Blob> {
+			// Save current camera position & target
+			const originalCamPos = camera.position.clone();
+			const originalTarget = controls.target.clone();
+
+			// Detect required views based on placed decals
+			const viewsToCapture: { name: string; angleY: number }[] = [
+				{ name: 'Frente', angleY: 0 }
+			];
+
+			const hasBack = decalItems.some(d => d.position.z < -0.15 || d.normal.z < -0.2);
+			const hasLeft = decalItems.some(d => d.position.x < -0.2);
+			const hasRight = decalItems.some(d => d.position.x > 0.2);
+
+			if (hasBack) viewsToCapture.push({ name: 'Espalda', angleY: Math.PI });
+			if (hasLeft) viewsToCapture.push({ name: 'Manga / Lado Izquierdo', angleY: -Math.PI / 2 });
+			if (hasRight) viewsToCapture.push({ name: 'Manga / Lado Derecho', angleY: Math.PI / 2 });
+
+			const dist = originalCamPos.distanceTo(originalTarget);
+
+			// Take snapshot images
+			const capturedImages: { name: string; dataUrl: string }[] = [];
+
+			for (const view of viewsToCapture) {
+				const x = dist * Math.sin(view.angleY);
+				const z = dist * Math.cos(view.angleY);
+				camera.position.set(x, originalCamPos.y, z);
+				camera.lookAt(originalTarget);
+				controls.target.copy(originalTarget);
+				renderer.render(scene, camera);
+
+				capturedImages.push({
+					name: view.name,
+					dataUrl: renderer.domElement.toDataURL('image/png')
+				});
+			}
+
+			// Restore original camera & controls
+			camera.position.copy(originalCamPos);
+			controls.target.copy(originalTarget);
+			renderer.render(scene, camera);
+
+			// Stitch captured images into 2D Grid Canvas
+			const gridCanvas = document.createElement('canvas');
+			const singleWidth = 600;
+			const singleHeight = 600;
+			const cols = capturedImages.length > 2 ? 2 : capturedImages.length;
+			const rows = Math.ceil(capturedImages.length / cols);
+
+			gridCanvas.width = singleWidth * cols;
+			gridCanvas.height = singleHeight * rows;
+			const ctx = gridCanvas.getContext('2d');
+
+			if (!ctx) throw new Error('No se pudo crear canvas de rejilla');
+
+			ctx.fillStyle = '#F8FAFC';
+			ctx.fillRect(0, 0, gridCanvas.width, gridCanvas.height);
+
+			// Load all images asynchronously
+			const loadedImgs = await Promise.all(
+				capturedImages.map(item => new Promise<{ name: string; img: HTMLImageElement }>((resolve) => {
+					const img = new Image();
+					img.onload = () => resolve({ name: item.name, img });
+					img.src = item.dataUrl;
+				}))
+			);
+
+			loadedImgs.forEach((item, index) => {
+				const col = index % cols;
+				const row = Math.floor(index / cols);
+				const posX = col * singleWidth;
+				const posY = row * singleHeight;
+
+				// Draw snapshot
+				ctx.drawImage(item.img, posX, posY, singleWidth, singleHeight);
+
+				// Draw Header Badge
+				ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+				ctx.fillRect(posX + 16, posY + 16, 220, 36);
+
+				ctx.fillStyle = '#FFFFFF';
+				ctx.font = 'bold 16px sans-serif';
+				ctx.fillText(`📷 Vista ${item.name}`, posX + 30, posY + 40);
+
+				// Subtle divider line
+				ctx.strokeStyle = '#E2E8F0';
+				ctx.lineWidth = 2;
+				ctx.strokeRect(posX, posY, singleWidth, singleHeight);
+			});
+
+			return new Promise((resolve, reject) => {
+				gridCanvas.toBlob((blob) => {
+					if (blob) resolve(blob);
+					else reject(new Error('Falló conversión a Blob'));
+				}, 'image/png');
+			});
+		}
+
+		function generateTechnicalSummaryMessage(): string {
+			const logoItems = decalItems.filter(d => d.type === 'logo');
+			const textItems = decalItems.filter(d => d.type === 'text');
+
+			let msg = `👕 *DISEÑO DE CAMISA PERSONALIZADA - SEMIREYS*\n\n`;
+			msg += `🎨 *Color de Tejido:* ${currentShirtColorName} (${currentShirtColorHex})\n\n`;
+
+			if (logoItems.length > 0) {
+				msg += `🏷️ *Emblemas y Logos (${logoItems.length}):*\n`;
+				logoItems.forEach((item, idx) => {
+					msg += `  ${idx + 1}. ${item.name || 'Logo'}\n`;
+					msg += `     - Tamaño: ${formatScaleBadge(item.scale)}, Rotación: ${item.rotation}°\n`;
+				});
+				msg += `\n`;
+			}
+
+			if (textItems.length > 0) {
+				msg += `✍️ *Textos Personalizados (${textItems.length}):*\n`;
+				textItems.forEach((item, idx) => {
+					const curvStr = Math.abs(item.textCurvature || 0) < 3 ? 'Recto (0°)' : `${item.textCurvature}° (${(item.textCurvature || 0) > 0 ? 'Cóncavo ⤺' : 'Convexo ⤻'})`;
+					msg += `  ${idx + 1}. Texto: "${item.textString || 'SEMIREYS'}"\n`;
+					msg += `     - Tipografía: ${item.fontFamily || 'Plus Jakarta Sans'} (Google Fonts)\n`;
+					msg += `     - Color Texto: ${item.textColor || '#1B2A4A'}\n`;
+					msg += `     - Espaciado Letras: ${item.letterSpacing || 0}px\n`;
+					msg += `     - Forma Curvatura: ${curvStr}\n`;
+					msg += `     - Tamaño: ${formatScaleBadge(item.scale)}, Rotación: ${item.rotation}°\n`;
+				});
+				msg += `\n`;
+			}
+
+			msg += `Adjunto la foto compuesta con las capturas de las zonas diseñadas.`;
+			return msg;
+		}
+
+		async function triggerSmartMultiAngleShare() {
+			if (loadingOverlay && loadingText) {
+				loadingText.textContent = '📸 Tomando capturas multángulo...';
+				loadingOverlay.style.display = 'flex';
+				loadingOverlay.style.opacity = '1';
+			}
+
+			try {
+				const blob = await captureSmartMultiAngleGrid();
+
+				if (loadingOverlay) {
+					loadingOverlay.style.opacity = '0';
+					setTimeout(() => loadingOverlay.style.display = 'none', 300);
+				}
+
+				const file = new File([blob], 'diseno-camisa-semireys.png', { type: 'image/png' });
+				const messageText = generateTechnicalSummaryMessage();
+
+				const shareData = {
+					files: [file],
+					title: 'Mi diseño personalizado - Semireys',
+					text: messageText
+				};
+
+				if (navigator.canShare && navigator.canShare({ files: [file] })) {
+					try {
+						await navigator.share(shareData);
+					} catch (err) {
+						console.log('Compartir cancelado o no soportado:', err);
+					}
+				} else {
+					const downloadLink = document.createElement('a');
+					downloadLink.href = URL.createObjectURL(blob);
+					downloadLink.download = 'diseno-camisa-semireys.png';
+					downloadLink.click();
+
+					const phone = "584145321885";
+					const textMsg = encodeURIComponent(messageText);
+					const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${textMsg}`;
+
+					setTimeout(() => {
+						alert('📸 Se ha descargado la foto compuesta con las vistas de tu diseño ("diseno-camisa-semireys.png"). A continuación se abrirá WhatsApp para que la adjuntes al mensaje.');
+						window.open(whatsappUrl, '_blank');
+					}, 600);
+				}
+			} catch (err) {
+				console.error('Error al generar captura multángulo:', err);
+				if (loadingOverlay) loadingOverlay.style.display = 'none';
+				alert('⚠️ Ocurrió un error al capturar las fotos multángulo.');
+			}
+		}
+
+		// 11. Resize & Render Loop
+		window.addEventListener('resize', () => {
+			if (!container) return;
+			camera.aspect = container.clientWidth / container.clientHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize(container.clientWidth, container.clientHeight);
+		});
+
+		function animate() {
+			requestAnimationFrame(animate);
+			controls.update();
+			renderer.render(scene, camera);
+		}
+
+		animate();
+	});
+</script>
+
+<style>
+	.customizer-3d-wrapper {
+		display: grid;
+		grid-template-columns: 1fr 380px;
+		gap: 2rem;
+		min-height: calc(100vh - 140px);
+		max-width: 1380px;
+		margin: 0 auto;
+		padding: 1.5rem;
+	}
+
+	@media (max-width: 960px) {
+		.customizer-3d-wrapper {
+			grid-template-columns: 1fr;
+			min-height: auto;
+		}
+	}
+
+	/* Viewport Container */
+	.viewport-container {
+		position: relative;
+		width: 100%;
+		height: 600px;
+		background: #F8FAFC;
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		border: 1px solid var(--border-color);
+		box-shadow: var(--shadow-md);
+		touch-action: none;
+	}
+
+	@media (max-width: 960px) {
+		.viewport-container {
+			height: 460px;
+		}
+	}
+
+	#webgl-canvas {
+		width: 100%;
+		height: 100%;
+		display: block;
+		cursor: grab;
+		touch-action: none;
+	}
+
+	#webgl-canvas:active {
+		cursor: grabbing;
+	}
+
+	/* Loader */
+	.loading-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(253, 251, 247, 0.95);
+		backdrop-filter: blur(8px);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		z-index: 20;
+		transition: opacity 0.3s ease;
+	}
+
+	.spinner {
+		width: 48px;
+		height: 48px;
+		border: 4px solid var(--border-color);
+		border-top-color: var(--accent-primary);
+		border-radius: 50%;
+		animation: spin 0.9s linear infinite;
+	}
+
+	@keyframes spin {
+		to { transform: rotate(360deg); }
+	}
+
+	#loading-text {
+		font-weight: 600;
+		color: var(--text-primary);
+		font-size: 0.95rem;
+	}
+
+	.progress-bar-bg {
+		width: 240px;
+		height: 6px;
+		background: var(--border-color);
+		border-radius: 3px;
+		overflow: hidden;
+	}
+
+	.progress-bar-fill {
+		width: 0%;
+		height: 100%;
+		background: var(--accent-primary);
+		transition: width 0.2s ease;
+	}
+
+	/* Viewport Hints (Top Left) */
+	.viewport-hints {
+		position: absolute;
+		top: 16px;
+		left: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+		pointer-events: none;
+		z-index: 10;
+	}
+
+	.hint-badge {
+		align-self: flex-start;
+		background: rgba(15, 23, 42, 0.75);
+		backdrop-filter: blur(6px);
+		color: #FFFFFF;
+		font-size: 0.78rem;
+		font-weight: 600;
+		padding: 6px 12px;
+		border-radius: var(--radius-sm);
+		display: flex;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.decal-mode-indicator {
+		align-self: flex-start;
+		background: var(--accent-primary);
+		color: #FFFFFF;
+		font-size: 0.85rem;
+		font-weight: 700;
+		padding: 8px 16px;
+		border-radius: var(--radius-md);
+		box-shadow: 0 4px 12px rgba(194, 125, 56, 0.4);
+		animation: pulse 1.5s infinite alternate;
+		text-align: center;
+	}
+
+	@keyframes pulse {
+		from { transform: scale(1); }
+		to { transform: scale(1.02); }
+	}
+
+	/* Top Right Floating Category Tabs Pill Overlay */
+	.viewport-top-right-tabs {
+		position: absolute;
+		top: 16px;
+		right: 16px;
+		z-index: 15;
+		background: rgba(255, 255, 255, 0.92);
+		backdrop-filter: blur(10px);
+		padding: 4px;
+		border-radius: var(--radius-md);
+		border: 1px solid rgba(226, 232, 240, 0.8);
+		box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+	}
+
+	.tab-buttons {
+		display: flex;
+		gap: 4px;
+	}
+
+	.tab-btn {
+		padding: 0.55rem 0.85rem;
+		border: none;
+		background: transparent;
+		font-family: inherit;
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		white-space: nowrap;
+	}
+
+	.tab-btn.active {
+		background: #FFFFFF;
+		color: var(--accent-secondary);
+		box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+	}
+
+	/* Floating Viewport Mode Toolbar */
+	.viewport-mode-toolbar {
+		position: absolute;
+		bottom: 16px;
+		left: 50%;
+		transform: translateX(-50%);
+		display: flex;
+		gap: 6px;
+		background: rgba(15, 23, 42, 0.88);
+		backdrop-filter: blur(12px);
+		padding: 6px;
+		border-radius: var(--radius-lg);
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+		z-index: 15;
+		max-width: 96%;
+		overflow-x: auto;
+	}
+
+	.mode-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 8px 12px;
+		border: none;
+		border-radius: var(--radius-md);
+		background: transparent;
+		color: #94A3B8;
+		font-family: inherit;
+		font-size: 0.8rem;
+		font-weight: 600;
+		cursor: pointer;
+		transition: all 0.25s ease;
+		white-space: nowrap;
+	}
+
+	.mode-btn:hover {
+		color: #FFFFFF;
+	}
+
+	.mode-btn.active {
+		background: var(--accent-primary);
+		color: #FFFFFF;
+		box-shadow: 0 2px 8px rgba(194, 125, 56, 0.4);
+	}
+
+	.mode-btn.danger-mode:hover, .mode-btn.danger-mode.active {
+		background: #EF4444;
+		color: #FFFFFF;
+		box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+	}
+
+	.mode-btn.share-mode {
+		background: rgba(37, 211, 102, 0.25);
+		color: #25D366;
+		border: 1px solid rgba(37, 211, 102, 0.5);
+	}
+
+	.mode-btn.share-mode:hover {
+		background: #25D366;
+		color: #FFFFFF;
+		box-shadow: 0 2px 10px rgba(37, 211, 102, 0.45);
+	}
+
+	.hidden {
+		display: none !important;
+	}
+
+	/* Controls Panel with Container Scroll matching Viewport Height (600px) */
+	.controls-panel {
+		background: var(--bg-card);
+		border: 1px solid var(--border-color);
+		border-radius: var(--radius-lg);
+		padding: 1.5rem;
+		box-shadow: var(--shadow-sm);
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		height: 600px;
+		max-height: 600px;
+		overflow-y: auto;
+	}
+
+	/* Custom Scrollbar for Controls Panel */
+	.controls-panel::-webkit-scrollbar {
+		width: 6px;
+	}
+	.controls-panel::-webkit-scrollbar-track {
+		background: #F1F5F9;
+		border-radius: 4px;
+	}
+	.controls-panel::-webkit-scrollbar-thumb {
+		background: #CBD5E1;
+		border-radius: 4px;
+	}
+	.controls-panel::-webkit-scrollbar-thumb:hover {
+		background: var(--accent-primary);
+	}
+
+	@media (max-width: 960px) {
+		.controls-panel {
+			height: auto;
+			max-height: 480px;
+		}
+	}
+
+	.panel-header h2 {
+		font-family: var(--font-serif);
+		font-size: 1.5rem;
+		color: var(--accent-secondary);
+	}
+
+	.product-name-badge {
+		display: inline-block;
+		font-size: 0.8rem;
+		font-weight: 600;
+		color: var(--accent-primary);
+		background: var(--accent-soft);
+		padding: 2px 8px;
+		border-radius: var(--radius-sm);
+		margin-top: 4px;
+	}
+
+	.tab-content {
+		display: none;
+		flex-direction: column;
+		gap: 1rem;
+	}
+
+	.tab-content.active {
+		display: flex;
+	}
+
+	.control-label {
+		font-weight: 700;
+		font-size: 0.9rem;
+		color: var(--text-primary);
+	}
+
+	/* Color presets */
+	.color-presets, .text-color-presets {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.color-preset-btn, .text-color-btn {
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+		border: 2px solid #FFFFFF;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+		cursor: pointer;
+		transition: transform 0.2s ease, border-color 0.2s ease;
+	}
+
+	.color-preset-btn:hover, .color-preset-btn.active,
+	.text-color-btn:hover, .text-color-btn.active {
+		transform: scale(1.15);
+		border-color: var(--accent-primary);
+		outline: 2px solid var(--accent-primary);
+	}
+
+	.custom-color-picker-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0.8rem;
+		background: #F8FAFC;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-color);
+		font-size: 0.88rem;
+		font-weight: 600;
+	}
+
+	#shirt-custom-color {
+		border: none;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		cursor: pointer;
+		background: transparent;
+	}
+
+	/* Text Inputs & Dropdown */
+	.text-input-field {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		border: 1.5px solid var(--border-color);
+		border-radius: var(--radius-sm);
+		font-family: inherit;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		background: #FFFFFF;
+		outline: none;
+		transition: border-color 0.2s ease;
+	}
+
+	.text-input-field:focus {
+		border-color: var(--accent-primary);
+	}
+
+	/* 0.30s Animated Expand & Fade Containers */
+	.decal-adjustments, .text-advanced-options {
+		display: flex;
+		flex-direction: column;
+		gap: 0.9rem;
+		background: #F8FAFC;
+		padding: 0.9rem;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-color);
+		opacity: 1;
+		transform: translateY(0);
+		max-height: 1400px;
+		overflow: visible;
+		transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+                    max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.decal-adjustments.hidden-animated, .text-advanced-options.hidden-animated {
+		opacity: 0;
+		transform: translateY(-12px);
+		max-height: 0;
+		padding: 0;
+		margin: 0;
+		border: none;
+		overflow: hidden;
+		pointer-events: none;
+	}
+
+	.adjustment-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.decal-count-badge {
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--accent-primary);
+		background: var(--accent-soft);
+		padding: 2px 8px;
+		border-radius: var(--radius-sm);
+	}
+
+	/* Custom UI Range Sliders & Value Badges */
+	.slider-group-column {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		background: #FFFFFF;
+		padding: 0.8rem;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-color);
+	}
+
+	.slider-header {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.84rem;
+		font-weight: 600;
+		color: var(--text-primary);
+	}
+
+	.value-badge {
+		font-size: 0.78rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		background: var(--accent-soft);
+		padding: 2px 8px;
+		border-radius: var(--radius-sm);
+	}
+
+	/* Premium Custom UI Range Input Styling with Unclipped Full Visibility */
+	.custom-ui-range {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 100%;
+		height: 8px;
+		background: #CBD5E1;
+		border-radius: 4px;
+		outline: none;
+		margin-top: 6px;
+		cursor: pointer;
+		display: block;
+		position: relative;
+		z-index: 5;
+	}
+
+	.custom-ui-range::-webkit-slider-thumb {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var(--accent-primary);
+		border: 2px solid #FFFFFF;
+		box-shadow: 0 2px 6px rgba(194, 125, 56, 0.4);
+		cursor: pointer;
+		transition: transform 0.15s ease, background-color 0.15s ease;
+	}
+
+	.custom-ui-range::-webkit-slider-thumb:hover {
+		transform: scale(1.2);
+		background: #B06E2F;
+	}
+
+	.custom-ui-range::-moz-range-thumb {
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background: var(--accent-primary);
+		border: 2px solid #FFFFFF;
+		box-shadow: 0 2px 6px rgba(194, 125, 56, 0.4);
+		cursor: pointer;
+		transition: transform 0.15s ease, background-color 0.15s ease;
+	}
+
+	.custom-ui-range::-moz-range-thumb:hover {
+		transform: scale(1.2);
+		background: #B06E2F;
+	}
+
+	.curvature-labels {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.7rem;
+		font-weight: 600;
+		color: var(--text-muted);
+	}
+
+	.btn-primary-action {
+		width: 100%;
+		padding: 0.85rem 1rem;
+		background: var(--accent-primary);
+		color: #FFFFFF;
+		border: none;
+		border-radius: var(--radius-md);
+		font-family: inherit;
+		font-size: 0.9rem;
+		font-weight: 700;
+		cursor: pointer;
+		transition: background 0.2s ease, transform 0.2s ease;
+		box-shadow: 0 4px 12px rgba(194, 125, 56, 0.3);
+	}
+
+	.btn-primary-action:hover {
+		background: #B06E2F;
+		transform: translateY(-2px);
+	}
+
+	.decal-action-btns {
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.25rem;
+	}
+
+	.btn-secondary.danger {
+		flex: 1;
+		background: #FEF2F2;
+		color: #EF4444;
+		border: 1px solid #FCA5A5;
+		padding: 0.5rem;
+		border-radius: var(--radius-sm);
+		font-weight: 600;
+		cursor: pointer;
+		font-size: 0.82rem;
+		transition: background 0.2s ease;
+	}
+
+	.btn-secondary.danger:hover {
+		background: #FEE2E2;
+	}
+
+	.btn-secondary.outline {
+		background: #FFFFFF;
+		color: var(--text-muted);
+		border: 1px solid var(--border-color);
+		padding: 0.5rem;
+		border-radius: var(--radius-sm);
+		font-weight: 600;
+		cursor: pointer;
+		font-size: 0.82rem;
+		transition: all 0.2s ease;
+	}
+
+	.btn-secondary.outline:hover {
+		border-color: var(--text-primary);
+		color: var(--text-primary);
+	}
+</style>

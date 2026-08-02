@@ -130,12 +130,6 @@ const canonicalUrl = `https://semireys.com/productos/${product.slug}`;
 					</div>
 				</div>
 
-				<!-- Product Shareable Link -->
-				<div class="product-link-box">
-					<span class="link-label">🔗 Enlace del producto:</span>
-					<span class="link-url">{canonicalUrl}</span>
-				</div>
-
 				<!-- Actions -->
 				<div class="actions-group">
 					<button type="button" class="btn-customize" id="customize-btn">
@@ -295,7 +289,7 @@ const canonicalUrl = `https://semireys.com/productos/${product.slug}`;
 
 		if (customizeBtn) {
 			customizeBtn.addEventListener('click', () => {
-				alert(`Personalización para "${productName}": Proximamente podrás agregar tus medidas exactas y bordados personalizados.`);
+				window.location.href = '/personalizar?product=' + encodeURIComponent(productName);
 			});
 		}
 	});
