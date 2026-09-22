@@ -1,51 +1,258 @@
 [
   {
-    "id": "1",
-    "slug": "camisa-rayas-salmon",
-    "name": "Camisa a rayas con botones salmón",
-    "price": "49.99",
-    "description": "Camisa premium confeccionada en fina mezcla de algodón y lino a rayas, diseñada para ofrecer máxima frescura, ligereza y estilo contemporáneo en cualquier ocasión.",
+    "id": "2",
+    "slug": "pijama-saten-personal",
+    "name": "Pijama Personal",
+    "category": "pijamas-personales",
+    "categoryLabel": "Pijamas Personales",
+    "brand": "Semireys Sleep",
+    "customizable3D": false,
+    "price": "45.00",
+    "description": "Pijama individual de dos piezas elaborada en satén de seda ultrasuave. Máximo confort, elegancia nocturna y caída fluida disponible en tonos exclusivos.",
     "images": [
-      "/images/camisa_salmon_front.png",
-      "/images/camisa_salmon_detail.png"
+      "/images/pijama_personal.png",
+      "/images/pijama_personal_detail.png"
     ],
     "colors": [
-      { "name": "Salmón", "hex": "#E68B75" },
-      { "name": "Blanco Hueso", "hex": "#F4F1EA" },
-      { "name": "Azul Marino", "hex": "#1E293B" }
+      {
+        "name": "Azul Noche",
+        "hex": "#1E293B"
+      },
+      {
+        "name": "Rosa Perla",
+        "hex": "#E68B75"
+      },
+      {
+        "name": "Negro Azabache",
+        "hex": "#0F172A"
+      }
     ],
-    "sizes": ["S", "M", "L", "XL"]
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ]
   },
   {
-    "id": "2",
+    "id": "3",
+    "slug": "pijamas-familiares-coordinadas",
+    "name": "Set de Pijamas Familiares Coordinadas",
+    "category": "pijamas-familiares",
+    "categoryLabel": "Pijamas Familiares",
+    "brand": "Semireys Sleep",
+    "customizable3D": false,
+    "price": "89.99",
+    "description": "Juego completo de pijamas a juego para adultos y niños. Confeccionadas en 100% algodón transpirable y suave para momentos inolvidables en familia.",
+    "images": [
+      "/images/pijama_familiar.png",
+      "/images/pijama_familiar_detail.png"
+    ],
+    "colors": [
+      {
+        "name": "Azul Familiar",
+        "hex": "#1B2A4A"
+      },
+      {
+        "name": "Gris Algodón",
+        "hex": "#CBD5E1"
+      },
+      {
+        "name": "Rojo Festivo",
+        "hex": "#991B1B"
+      }
+    ],
+    "sizes": [
+      "Pack Familiar (2 Adultos + 2 Niños)",
+      "Individual Adulto",
+      "Individual Niño"
+    ]
+  },
+  {
+    "id": "5",
+    "slug": "uniforme-deportivo-elite",
+    "name": "Uniforme Deportivo Personalizado",
+    "category": "uniformes-deportivos",
+    "categoryLabel": "Uniformes Deportivos",
+    "brand": "Semireys Sport",
+    "customizable3D": false,
+    "price": "38.50",
+    "description": "Conjunto deportivo de camiseta y short en tejido microperforado de secado rápido. Personalización completa con números, nombres y logotipos de equipo.",
+    "images": [
+      "/images/uniforme_deportivo.png",
+      "/images/uniforme_deportivo_detail.png"
+    ],
+    "colors": [
+      {
+        "name": "Negro Deportivo",
+        "hex": "#0F172A"
+      },
+      {
+        "name": "Azul Rey",
+        "hex": "#1D4ED8"
+      },
+      {
+        "name": "Rojo Pasión",
+        "hex": "#DC2626"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "Infantil"
+    ]
+  },
+  {
+    "id": "6",
     "slug": "guayabera-clasica-blanca",
-    "name": "Guayabera Clásica Blanca en Lino",
+    "name": "Guayabera Clásica Blanca en Lino Artesanal",
+    "category": "guayaberas",
+    "categoryLabel": "Guayaberas",
+    "brand": "Semireys Classic",
+    "customizable3D": false,
     "price": "59.99",
     "description": "Tradicional guayabera de lino 100% caracterizada por sus alforzas finamente cosidas y detalles artesanales. Ideal para eventos formales y de verano.",
     "images": [
       "/images/guayabera_blanca_front.png",
-      "/images/camisa_salmon_detail.png"
+      "/images/guayabera_blanca_detail.png"
     ],
     "colors": [
-      { "name": "Blanco Puro", "hex": "#FFFFFF" },
-      { "name": "Beige Arena", "hex": "#E5D9C5" }
+      {
+        "name": "Blanco Puro",
+        "hex": "#FFFFFF"
+      },
+      {
+        "name": "Beige Arena",
+        "hex": "#E5D9C5"
+      },
+      {
+        "name": "Azul Pastel",
+        "hex": "#93C5FD"
+      }
     ],
-    "sizes": ["S", "M", "L", "XL", "XXL"]
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
   },
   {
-    "id": "3",
-    "slug": "camisa-lino-azul-marino",
-    "name": "Camisa de Lino Casual Azul Marino",
-    "price": "54.99",
-    "description": "Camisa de manga larga enrollable en tono azul marino profundo. Un básico imprescindible de alta elegancia informal.",
+    "id": "8",
+    "slug": "uniforme-quirurgico-medico",
+    "name": "Uniforme Quirúrgico Antifluidos Élite",
+    "category": "quirurgicos",
+    "categoryLabel": "Uniformes Quirúrgicos",
+    "brand": "Semireys Medical",
+    "customizable3D": false,
+    "price": "42.00",
+    "description": "Conjunto de pijama médica/quirúrgica antifluidos de alta durabilidad y comodidad superior. Personalización en 3D con bordado de nombre, especialidad y logotipo institucional.",
     "images": [
-      "/images/camisa_salmon_detail.png",
-      "/images/camisa_salmon_front.png"
+      "/images/uniforme_quirurgico.png",
+      "/images/uniforme_quirurgico_detail.png"
     ],
     "colors": [
-      { "name": "Azul Marino", "hex": "#1B2A4A" },
-      { "name": "Celeste", "hex": "#A0C4DF" }
+      {
+        "name": "Verde Quirúrgico",
+        "hex": "#0D9488"
+      },
+      {
+        "name": "Azul Celeste Médico",
+        "hex": "#0284C7"
+      },
+      {
+        "name": "Azul Marino",
+        "hex": "#1E293B"
+      }
     ],
-    "sizes": ["S", "M", "L", "XL"]
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ]
+  },
+  {
+    "id": "9",
+    "slug": "camisa-promocion-graduacion",
+    "name": "Camisas & Chaquetas de Promoción",
+    "category": "camisas-promociones",
+    "categoryLabel": "Camisas de Promociones",
+    "brand": "Semireys Custom",
+    "customizable3D": false,
+    "price": "48.00",
+    "description": "Conjunto de camisas y chaquetas de promoción para grupos de bachillerato. Confección personalizada con franjas de color, cierres y bordados individuales de nombres e iniciales de la promoción.",
+    "images": [
+      "/images/camisa_promocion.png",
+      "/images/camisa_promocion_detail.png"
+    ],
+    "colors": [
+      {
+        "name": "Blanco & Rosa Pastel",
+        "hex": "#F7CE68"
+      },
+      {
+        "name": "Azul Marino",
+        "hex": "#1E293B"
+      },
+      {
+        "name": "Personalizado",
+        "hex": "#C27D38"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL",
+      "A la medida"
+    ]
+  },
+  {
+    "id": "10",
+    "slug": "franela-estampada-unicolor",
+    "name": "Franela Estampada Unicolor",
+    "category": "camisas-personalizadas",
+    "categoryLabel": "Camisas Personalizadas",
+    "brand": "Semireys Custom",
+    "customizable3D": true,
+    "price": "49.50",
+    "description": "Franela unicolor de corte confort con opción de estampado y bordado personalizado. Compatible con visualización 3D y servicio de entalle y ajustes a medida.",
+    "images": [
+      "https://www.todotransfershop.com/cdn/shop/files/CAMISA_PREMIUM.jpg?v=1768246680&width=990"
+    ],
+    "colors": [
+      {
+        "name": "Negro Azabache",
+        "hex": "#0F172A"
+      },
+      {
+        "name": "Blanco Hueso",
+        "hex": "#F4F1EA"
+      },
+      {
+        "name": "Azul Marino",
+        "hex": "#1B2A4A"
+      },
+      {
+        "name": "Vinotinto",
+        "hex": "#7F1D1D"
+      }
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "A la medida"
+    ]
   }
 ]

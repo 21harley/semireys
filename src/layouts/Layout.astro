@@ -6,11 +6,11 @@ interface Props {
 
 const { 
 	title = "Catálogo – Semireys", 
-	description = "Colección de ropa elegante y prendas personalizadas de Semireys." 
+	description = "Colección de ropa elegante, uniformes quirúrgicos, camisas de promoción y prendas personalizadas de Semireys." 
 } = Astro.props;
 ---
 
-<!dnctype html>
+<!DOCTYPE html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
@@ -33,9 +33,25 @@ const {
 					<span class="logo-accent">SEMI</span>REYS
 				</a>
 				<nav class="nav-links">
-					<a href="/" class="nav-link active">Catálogo</a>
-					<a href="#" class="nav-link">Nuestra Marca</a>
-					<a href="#" class="nav-link">Contacto</a>
+					<a href="/" class="nav-link active">Inicio / Catálogo</a>
+					
+					<div class="nav-dropdown">
+						<button type="button" class="nav-dropdown-btn">
+							Opciones & Servicios <span class="arrow-down">▾</span>
+						</button>
+						<div class="dropdown-menu">
+							<a href="/#catalogo" class="dropdown-item">✂️ Ajustes para Vender</a>
+							<a href="/#catalogo" class="dropdown-item">🌙 Pijamas Personales</a>
+							<a href="/#catalogo" class="dropdown-item">👨‍👩‍👧‍👦 Pijamas Familiares</a>
+							<a href="/#catalogo" class="dropdown-item">👔 Camisas Personalizadas</a>
+							<a href="/#catalogo" class="dropdown-item">⚽ Uniformes Deportivos</a>
+							<a href="/#catalogo" class="dropdown-item">🪡 Guayaberas</a>
+							<a href="/#catalogo" class="dropdown-item">🩺 Uniformes Quirúrgicos</a>
+							<a href="/#catalogo" class="dropdown-item">🎓 Camisas de Promociones</a>
+						</div>
+					</div>
+
+					<a href="/#sobre-nosotros" class="nav-link">Sobre Nosotros</a>
 				</nav>
 			</div>
 		</header>
@@ -48,10 +64,33 @@ const {
 		<!-- Footer -->
 		<footer class="site-footer">
 			<div class="footer-container">
-				<div class="footer-brand">
-					<h3>SEMIREYS</h3>
-					<p>Elegancia en lino y moda exclusiva confeccionada a tu medida.</p>
+				<div class="footer-grid">
+					<div class="footer-brand">
+						<h3><span class="logo-accent">SEMI</span>REYS</h3>
+						<p>Alta confección, sastrería, ropa quirúrgica y moda exclusiva a tu medida con visualización 3D.</p>
+					</div>
+
+					<div class="footer-column">
+						<h4>Nuestras Opciones</h4>
+						<ul>
+							<li><a href="/#catalogo">✂️ Ajustes para Vender</a></li>
+							<li><a href="/#catalogo">🌙 Pijamas Personales</a></li>
+							<li><a href="/#catalogo">👨‍👩‍👧‍👦 Pijamas Familiares</a></li>
+							<li><a href="/#catalogo">👔 Camisas Personalizadas</a></li>
+							<li><a href="/#catalogo">⚽ Uniformes Deportivos</a></li>
+							<li><a href="/#catalogo">🪡 Guayaberas de Lino</a></li>
+							<li><a href="/#catalogo">🩺 Uniformes Quirúrgicos</a></li>
+							<li><a href="/#catalogo">🎓 Camisas de Promociones</a></li>
+						</ul>
+					</div>
+
+					<div class="footer-column">
+						<h4>Contacto & Asistencia</h4>
+						<p>💬 WhatsApp: +58 414-5321885</p>
+						<p>📍 Atención personalizada para pedidos y envíos</p>
+					</div>
 				</div>
+
 				<div class="footer-copy">
 					&copy; {new Date().getFullYear()} SEMIREYS. Todos los derechos reservados.
 				</div>
@@ -110,12 +149,11 @@ const {
 		min-height: 100vh;
 	}
 
-	/* Header styles */
 	.navbar {
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: rgba(253, 251, 247, 0.85);
+		background: rgba(253, 251, 247, 0.92);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
 		border-bottom: 1px solid rgba(226, 232, 240, 0.8);
@@ -125,7 +163,7 @@ const {
 	.nav-container {
 		max-width: 1240px;
 		margin: 0 auto;
-		padding: 1.25rem 1.5rem;
+		padding: 1.1rem 1.5rem;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -149,13 +187,14 @@ const {
 
 	.nav-links {
 		display: flex;
-		gap: 2rem;
+		align-items: center;
+		gap: 1.75rem;
 	}
 
 	.nav-link {
 		text-decoration: none;
 		color: var(--text-muted);
-		font-weight: 500;
+		font-weight: 600;
 		font-size: 0.95rem;
 		transition: color 0.2s ease;
 		position: relative;
@@ -165,29 +204,85 @@ const {
 		color: var(--accent-primary);
 	}
 
-	.nav-link.active::after {
-		content: '';
-		position: absolute;
-		bottom: -6px;
-		left: 0;
-		width: 100%;
-		height: 2px;
-		background: var(--accent-primary);
-		border-radius: 2px;
+	.nav-highlight {
+		color: var(--accent-primary);
+		background: var(--accent-soft);
+		padding: 0.4rem 0.9rem;
+		border-radius: var(--radius-sm);
+		border: 1px solid rgba(194, 125, 56, 0.25);
 	}
 
-	/* Main content */
+	.nav-highlight:hover {
+		background: var(--accent-primary);
+		color: #FFFFFF;
+	}
+
+	.nav-dropdown {
+		position: relative;
+	}
+
+	.nav-dropdown-btn {
+		background: none;
+		border: none;
+		font-family: inherit;
+		font-size: 0.95rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 0.3rem;
+		padding: 0.4rem 0;
+		transition: color 0.2s ease;
+	}
+
+	.nav-dropdown-btn:hover {
+		color: var(--accent-primary);
+	}
+
+	.dropdown-menu {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		width: 250px;
+		background: #FFFFFF;
+		border: 1px solid var(--border-color);
+		border-radius: var(--radius-md);
+		box-shadow: var(--shadow-md);
+		padding: 0.5rem 0;
+		display: none;
+		flex-direction: column;
+		z-index: 200;
+	}
+
+	.nav-dropdown:hover .dropdown-menu {
+		display: flex;
+	}
+
+	.dropdown-item {
+		padding: 0.65rem 1.25rem;
+		text-decoration: none;
+		color: var(--text-primary);
+		font-size: 0.9rem;
+		font-weight: 500;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+
+	.dropdown-item:hover {
+		background-color: var(--accent-soft);
+		color: var(--accent-primary);
+	}
+
 	.main-content {
 		flex: 1;
 		width: 100%;
 	}
 
-	/* Footer */
 	.site-footer {
 		background-color: var(--surface-dark);
 		color: var(--text-light);
-		padding: 3rem 1.5rem 2rem;
-		margin-top: 5rem;
+		padding: 4rem 1.5rem 2rem;
+		margin-top: 4rem;
 	}
 
 	.footer-container {
@@ -195,30 +290,76 @@ const {
 		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		text-align: center;
-		gap: 1.5rem;
+		gap: 3rem;
+	}
+
+	.footer-grid {
+		display: grid;
+		grid-template-columns: 2fr 1.5fr 1.5fr;
+		gap: 3rem;
+	}
+
+	@media (max-width: 768px) {
+		.footer-grid {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+		.nav-links {
+			gap: 1rem;
+		}
 	}
 
 	.footer-brand h3 {
 		font-family: var(--font-serif);
-		font-size: 1.5rem;
+		font-size: 1.75rem;
 		letter-spacing: 0.1em;
 		color: #FFFFFF;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.75rem;
 	}
 
 	.footer-brand p {
 		color: #94A3B8;
+		font-size: 0.92rem;
+		line-height: 1.6;
+		max-width: 380px;
+	}
+
+	.footer-column h4 {
+		font-size: 1.05rem;
+		font-weight: 700;
+		color: #FFFFFF;
+		margin-bottom: 1rem;
+	}
+
+	.footer-column ul {
+		list-style: none;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.footer-column a {
+		color: #94A3B8;
+		text-decoration: none;
 		font-size: 0.9rem;
-		max-width: 400px;
+		transition: color 0.2s ease;
+	}
+
+	.footer-column a:hover {
+		color: var(--accent-primary);
+	}
+
+	.footer-column p {
+		color: #94A3B8;
+		font-size: 0.9rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.footer-copy {
 		border-top: 1px solid rgba(255, 255, 255, 0.1);
-		width: 100%;
-		padding-top: 1.5rem;
+		padding-top: 1.75rem;
 		font-size: 0.85rem;
 		color: #64748B;
+		text-align: center;
 	}
 </style>

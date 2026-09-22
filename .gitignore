@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # documentation / structure specification ignored from git
 project_structure.md
+
+# update specification ignored from git
+update.md
