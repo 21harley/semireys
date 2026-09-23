@@ -32,12 +32,13 @@ const {
 				<a href="/" class="brand-logo">
 					<span class="logo-accent">SEMI</span>REYS
 				</a>
-				<nav class="nav-links">
+
+				<nav class="nav-links" id="nav-links">
 					<a href="/" class="nav-link active">Inicio / Catálogo</a>
 					
 					<div class="nav-dropdown">
 						<button type="button" class="nav-dropdown-btn">
-							Opciones & Servicios <span class="arrow-down">▾</span>
+							Opciones &amp; Servicios <span class="arrow-down">▾</span>
 						</button>
 						<div class="dropdown-menu">
 							<a href="/#catalogo" class="dropdown-item">✂️ Ajustes para Vender</a>
@@ -45,7 +46,7 @@ const {
 							<a href="/#catalogo" class="dropdown-item">👨‍👩‍👧‍👦 Pijamas Familiares</a>
 							<a href="/#catalogo" class="dropdown-item">👔 Camisas Personalizadas</a>
 							<a href="/#catalogo" class="dropdown-item">⚽ Uniformes Deportivos</a>
-							<a href="/#catalogo" class="dropdown-item">🪡 Guayaberas</a>
+							<a href="/#catalogo" class="dropdown-item">🧵 Guayaberas</a>
 							<a href="/#catalogo" class="dropdown-item">🩺 Uniformes Quirúrgicos</a>
 							<a href="/#catalogo" class="dropdown-item">🎓 Camisas de Promociones</a>
 						</div>
@@ -53,8 +54,15 @@ const {
 
 					<a href="/#sobre-nosotros" class="nav-link">Sobre Nosotros</a>
 				</nav>
+
+				<button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú">
+					<span class="hamburger-icon" id="hamburger-icon">☰</span>
+				</button>
 			</div>
 		</header>
+
+		<!-- Nav overlay for mobile -->
+		<div class="nav-overlay" id="nav-overlay"></div>
 
 		<!-- Main Content Slot -->
 		<main class="main-content">
@@ -96,6 +104,56 @@ const {
 				</div>
 			</div>
 		</footer>
+
+		<script>
+			document.addEventListener('DOMContentLoaded', () => {
+				const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+				const navLinks = document.getElementById('nav-links');
+				const hamburgerIcon = document.getElementById('hamburger-icon');
+				const navDropdownBtn = document.querySelector('.nav-dropdown-btn');
+				const navDropdown = document.querySelector('.nav-dropdown');
+				const navOverlay = document.getElementById('nav-overlay');
+
+				function closeMenu() {
+					if (navLinks) navLinks.classList.remove('active');
+					if (navOverlay) navOverlay.classList.remove('active');
+					if (hamburgerIcon) hamburgerIcon.textContent = '☰';
+				}
+
+				if (mobileMenuBtn && navLinks) {
+					mobileMenuBtn.addEventListener('click', () => {
+						const isOpen = navLinks.classList.toggle('active');
+						if (navOverlay) navOverlay.classList.toggle('active', isOpen);
+						if (hamburgerIcon) hamburgerIcon.textContent = isOpen ? '✕' : '☰';
+					});
+				}
+
+				// Close on overlay click
+				if (navOverlay) {
+					navOverlay.addEventListener('click', closeMenu);
+				}
+
+				if (navDropdownBtn && navDropdown) {
+					navDropdownBtn.addEventListener('click', (e) => {
+						if (window.innerWidth <= 1024) {
+							e.stopPropagation();
+							navDropdown.classList.toggle('active');
+						}
+					});
+				}
+
+				// Close menu when a link is clicked
+				if (navLinks) {
+					navLinks.querySelectorAll('.dropdown-item, .nav-link').forEach(link => {
+						link.addEventListener('click', () => {
+							if (window.innerWidth <= 1024) {
+								closeMenu();
+							}
+						});
+					});
+				}
+			});
+		</script>
 	</body>
 </html>
 
@@ -134,19 +192,19 @@ const {
 		padding: 0;
 	}
 
-	html, body {
-		height: 100%;
-		font-family: var(--font-sans);
-		background-color: var(--bg-main);
-		color: var(--text-primary);
-		line-height: 1.6;
-		-webkit-font-smoothing: antialiased;
+	html {
+		scroll-behavior: smooth;
 	}
 
 	body {
 		display: flex;
 		flex-direction: column;
 		min-height: 100vh;
+		font-family: var(--font-sans);
+		background-color: var(--bg-main);
+		color: var(--text-primary);
+		line-height: 1.6;
+		-webkit-font-smoothing: antialiased;
 	}
 
 	.navbar {
@@ -299,13 +357,123 @@ const {
 		gap: 3rem;
 	}
 
-	@media (max-width: 768px) {
+	.nav-overlay {
+		display: none;
+		position: fixed;
+		inset: 0;
+		z-index: 98;
+		background: rgba(15, 23, 42, 0.35);
+		backdrop-filter: blur(2px);
+		pointer-events: none;
+	}
+
+	.nav-overlay.active {
+		display: block;
+		pointer-events: auto;
+	}
+
+	.mobile-menu-btn {
+		display: none;
+		background: none;
+		border: 2px solid var(--accent-primary);
+		border-radius: 8px;
+		padding: 0.4rem 0.65rem;
+		font-size: 1.25rem;
+		line-height: 1;
+		color: var(--accent-primary);
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.mobile-menu-btn:hover {
+		background: var(--accent-soft);
+	}
+
+	@media (max-width: 1024px) {
+		.mobile-menu-btn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.nav-container {
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+
+		.nav-links {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			width: 100%;
+			max-height: 75vh;
+			overflow-y: auto;
+			flex-direction: column;
+			gap: 0;
+			background: rgba(253, 251, 247, 0.99);
+			backdrop-filter: blur(12px);
+			border-bottom: 2px solid var(--border-color);
+			padding: 0.5rem 1.5rem 1rem;
+			box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+			z-index: 99;
+		}
+
+		@keyframes slideDown {
+			from { opacity: 0; transform: translateY(-6px); }
+			to   { opacity: 1; transform: translateY(0); }
+		}
+
+		.nav-links.active {
+			display: flex;
+			animation: slideDown 0.2s ease;
+		}
+
+		.nav-link {
+			padding: 0.85rem 0;
+			width: 100%;
+			font-size: 1rem;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.nav-dropdown {
+			width: 100%;
+		}
+
+		.nav-dropdown-btn {
+			padding: 0.85rem 0;
+			width: 100%;
+			font-size: 1rem;
+			justify-content: space-between;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		.nav-dropdown:hover .dropdown-menu {
+			display: none;
+		}
+
+		.nav-dropdown.active .dropdown-menu {
+			display: flex;
+			position: static;
+			width: 100%;
+			box-shadow: none;
+			border: none;
+			border-bottom: 1px solid var(--border-color);
+			border-radius: 0;
+			padding: 0.25rem 0 0.25rem 1rem;
+			background: var(--accent-soft);
+		}
+
+		.nav-dropdown.active .dropdown-item {
+			padding: 0.6rem 0.75rem;
+			font-size: 0.9rem;
+			color: var(--text-primary);
+		}
+
 		.footer-grid {
 			grid-template-columns: 1fr;
 			gap: 2rem;
-		}
-		.nav-links {
-			gap: 1rem;
 		}
 	}
 

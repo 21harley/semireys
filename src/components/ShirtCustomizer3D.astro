@@ -1370,7 +1370,7 @@ const { initialColor = "#F4F1EA", productName = "Camisa de Lino Semireys" } = As
 					downloadLink.download = 'diseno-camisa-semireys.png';
 					downloadLink.click();
 
-					const phone = "584145321885";
+					const phone = import.meta.env.PUBLIC_WHATSAPP_PHONE;
 					const textMsg = encodeURIComponent(messageText);
 					const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${textMsg}`;
 

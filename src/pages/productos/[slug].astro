@@ -265,7 +265,7 @@ const is3D = product.customizable3D ?? false;
 		whatsappBtn.addEventListener('click', () => {
 			if (!selectedColor || !selectedSize) return;
 
-			const phone = "584145321885";
+			const phone = import.meta.env.PUBLIC_WHATSAPP_PHONE;
 			const textLines = [
 				"🌐 *Solicitud desde la Plataforma Semireys*",
 				"",

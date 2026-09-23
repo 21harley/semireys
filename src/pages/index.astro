@@ -1,76 +1,59 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import ProductCard from '../components/ProductCard.astro';
-import productsData from '../data/products.json';
+import Layout from "../layouts/Layout.astro";
+import ProductCard from "../components/ProductCard.astro";
+import productsData from "../data/products.json";
+import tijeraImg from '../assets/tijera.jpg';
+import sintaImg from '../assets/sinta.jpg';
+import hiloImg from '../assets/hilo.jpg';
+import agujaImg from '../assets/aguja.jpg';
+import semireysLogoImg from '../assets/semireys.jpg';
 
 // Unique values for filters
 const categories = [
-	{ id: 'all', label: 'Todas las Opciones' },
-	{ id: 'ajustes-vender', label: '✂️ Ajustes para Vender', icon: '✂️' },
-	{ id: 'pijamas-personales', label: '🌙 Pijamas Personales', icon: '🌙' },
-	{ id: 'pijamas-familiares', label: '👨‍👩‍👧‍👦 Pijamas Familiares', icon: '👨‍👩‍👧‍👦' },
-	{ id: 'camisas-personalizadas', label: '👔 Camisas Personalizadas', icon: '👔' },
-	{ id: 'uniformes-deportivos', label: '⚽ Uniformes Deportivos', icon: '⚽' },
-	{ id: 'guayaberas', label: '🪡 Guayaberas', icon: '🪡' },
-	{ id: 'quirurgicos', label: '🩺 Uniformes Quirúrgicos', icon: '🩺' },
-	{ id: 'camisas-promociones', label: '🎓 Camisas de Promociones', icon: '🎓' },
+	{ id: "all", label: "Todas las Opciones" },
+	{ id: "ajustes-vender", label: "✂️ Ajustes para Vender", icon: "✂️" },
+	{ id: "pijamas-personales", label: "🌙 Pijamas Personales", icon: "🌙" },
+	{ id: "pijamas-familiares", label: "👨‍👩‍👧‍👦 Pijamas Familiares", icon: "👨‍👩‍👧‍👦" },
+	{
+		id: "camisas-personalizadas",
+		label: "👔 Camisas Personalizadas",
+		icon: "👔",
+	},
+	{
+		id: "uniformes-deportivos",
+		label: "⚽ Uniformes Deportivos",
+		icon: "⚽",
+	},
+	{ id: "guayaberas", label: "🪡 Guayaberas", icon: "🪡" },
+	{ id: "quirurgicos", label: "🩺 Uniformes Quirúrgicos", icon: "🩺" },
+	{
+		id: "camisas-promociones",
+		label: "🎓 Camisas de Promociones",
+		icon: "🎓",
+	},
 ];
 
-const brands = Array.from(new Set(productsData.map(p => p.brand).filter(Boolean)));
-const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
+const brands = Array.from(
+	new Set(productsData.map((p) => p.brand).filter(Boolean)),
+);
+const allSizes = Array.from(
+	new Set(productsData.flatMap((p) => p.sizes || [])),
+);
 ---
 
-<Layout title="Catálogo – Semireys" description="Explora nuestras líneas exclusivas: Ajustes para vender, pijamas personales, pijamas familiares, camisas personalizadas, uniformes deportivos, guayaberas, uniformes quirúrgicos y camisas de promociones.">
+<Layout
+	title="Catálogo – Semireys"
+	description="Explora nuestras líneas exclusivas: Ajustes para vender, pijamas personales, pijamas familiares, camisas personalizadas, uniformes deportivos, guayaberas, uniformes quirúrgicos y camisas de promociones."
+>
 	<!-- Hero Section -->
 	<section class="hero-section">
 		<div class="hero-content">
-			<span class="hero-subtitle">Confección Exclusiva 2026</span>
 			<h1 class="hero-title">Moda, Confección & Estilo a tu Medida</h1>
 			<p class="hero-description">
-				Explora nuestras categorías exclusivas: guayaberas de lino, camisas personalizadas en 3D, pijamas familiares, uniformes deportivos, prendas quirúrgicas y camisas de promoción.
+				Explora nuestras categorías exclusivas: guayaberas de lino,
+				camisas personalizadas, pijamas familiares, uniformes
+				deportivos, prendas quirúrgicas y camisas de promoción.
 			</p>
-		</div>
-	</section>
-
-	<!-- Quick Showcase (Productos & Servicios separados) -->
-	<section class="options-showcase" id="opciones">
-		<div class="container">
-			<!-- Servicios Section Header -->
-			<div class="showcase-header services-header" id="servicios">
-				<span class="showcase-badge service-badge">ATENCIÓN & ASESORÍA DIRECTA</span>
-				<h2>Nuestros Servicios Especializados</h2>
-				<p>Haz clic en cualquier servicio para solicitar información directa vía WhatsApp</p>
-			</div>
-
-			<div class="options-grid services-grid">
-				<div class="option-card service-card" data-service-msg="¡Hola! Quisiera solicitar información y cotización sobre el servicio de Reparación y Arreglo de Prendas.">
-					<div class="option-icon">✂️</div>
-					<h3>Reparación y Arreglo de Prendas</h3>
-					<p>Servicio profesional de entalle, dobladillo industrial, ajuste y restauración de prendas a medida.</p>
-					<span class="option-link service-link">Solicitar por WhatsApp 💬</span>
-				</div>
-
-				<div class="option-card service-card" data-service-msg="¡Hola! Me interesa el servicio de Diseño de Logos para Bordar. ¿Podrían asesorarme con las especificaciones y presupuestos?">
-					<div class="option-icon">🧵</div>
-					<h3>Diseño de Logos para Bordar</h3>
-					<p>Digitalización, ponchado y adaptación de vectores e insignias institucionales para matriz de bordado.</p>
-					<span class="option-link service-link">Solicitar por WhatsApp 💬</span>
-				</div>
-
-				<div class="option-card service-card" data-service-msg="¡Hola! Deseo cotizar el servicio de Diseño de Logos para Estampar (Serigrafía / DTF / Sublimación).">
-					<div class="option-icon">🎨</div>
-					<h3>Diseño de Logos para Estampar</h3>
-					<p>Creación gráfica y preparación de artes finales para serigrafía, DTF, vinilo textil y sublimación.</p>
-					<span class="option-link service-link">Solicitar por WhatsApp 💬</span>
-				</div>
-
-				<div class="option-card service-card" data-service-msg="¡Hola! Quisiera obtener más información sobre la Mentoría de Aprendizaje y Pasantías en confección y sastrería en Semireys.">
-					<div class="option-icon">🎓</div>
-					<h3>Mentoría de Aprendizaje & Pasantías</h3>
-					<p>Programas de formación práctica, tutorías técnicas de costura y pasantías en nuestro taller de confección.</p>
-					<span class="option-link service-link">Solicitar por WhatsApp 💬</span>
-				</div>
-			</div>
 		</div>
 	</section>
 
@@ -80,60 +63,166 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 			<div class="section-header">
 				<div>
 					<h2>Catálogo General</h2>
-					<p id="product-counter">{productsData.length} productos disponibles</p>
+					<p id="product-counter">
+						{productsData.length} productos disponibles
+					</p>
 				</div>
 			</div>
 
-			<!-- Filter Bar (By Tipo de Prenda, Marca, Talla) -->
-			<div class="filter-bar">
-				<div class="filter-group">
-					<label for="filter-category" class="filter-label">Tipo de Prenda / Opción:</label>
-					<select id="filter-category" class="filter-select">
-						<option value="all">Todas las Opciones</option>
-						{categories.filter(c => c.id !== 'all').map(cat => (
-							<option value={cat.id}>{cat.label}</option>
-						))}
-					</select>
-				</div>
+			<!-- Filter Bar (By Tipo de Prenda, Marca, Talla) — solo si hay más de 10 productos -->
+			{
+				productsData.length > 10 && (
+					<div class="filter-bar">
+						<div class="filter-group">
+							<label for="filter-category" class="filter-label">
+								Tipo de Prenda / Opción:
+							</label>
+							<select id="filter-category" class="filter-select">
+								<option value="all">Todas las Opciones</option>
+								{categories
+									.filter((c) => c.id !== "all")
+									.map((cat) => (
+										<option value={cat.id}>
+											{cat.label}
+										</option>
+									))}
+							</select>
+						</div>
 
-				<div class="filter-group">
-					<label for="filter-brand" class="filter-label">Marca:</label>
-					<select id="filter-brand" class="filter-select">
-						<option value="all">Todas las Marcas</option>
-						{brands.map(brand => (
-							<option value={brand}>{brand}</option>
-						))}
-					</select>
-				</div>
+						<div class="filter-group">
+							<label for="filter-brand" class="filter-label">
+								Marca:
+							</label>
+							<select id="filter-brand" class="filter-select">
+								<option value="all">Todas las Marcas</option>
+								{brands.map((brand) => (
+									<option value={brand}>{brand}</option>
+								))}
+							</select>
+						</div>
 
-				<div class="filter-group">
-					<label for="filter-size" class="filter-label">Talla:</label>
-					<select id="filter-size" class="filter-select">
-						<option value="all">Todas las Tallas</option>
-						{allSizes.map(size => (
-							<option value={size}>{size}</option>
-						))}
-					</select>
-				</div>
+						<div class="filter-group">
+							<label for="filter-size" class="filter-label">
+								Talla:
+							</label>
+							<select id="filter-size" class="filter-select">
+								<option value="all">Todas las Tallas</option>
+								{allSizes.map((size) => (
+									<option value={size}>{size}</option>
+								))}
+							</select>
+						</div>
 
-				<button type="button" id="reset-filters-btn" class="reset-filters-btn">
-					🔄 Limpiar Filtros
-				</button>
-			</div>
+						<button
+							type="button"
+							id="reset-filters-btn"
+							class="reset-filters-btn"
+						>
+							🔄 Limpiar Filtros
+						</button>
+					</div>
+				)
+			}
 
 			<!-- Product Grid -->
 			<div class="product-grid" id="product-grid">
-				{productsData.map((product) => (
-					<ProductCard product={product} />
-				))}
+				{
+					productsData.map((product) => (
+						<ProductCard product={product} />
+					))
+				}
 			</div>
 
 			<!-- Empty State -->
 			<div class="empty-catalog hidden" id="empty-catalog">
 				<div class="empty-icon">🔍</div>
 				<h3>No se encontraron productos</h3>
-				<p>Intenta seleccionar otra combinación de filtros de Marca, Talla o Tipo de prenda.</p>
-				<button type="button" id="empty-reset-btn" class="btn-primary">Ver todas las opciones</button>
+				<p>
+					Intenta seleccionar otra combinación de filtros de Marca,
+					Talla o Tipo de prenda.
+				</p>
+				<button type="button" id="empty-reset-btn" class="btn-primary"
+					>Ver todas las opciones</button
+				>
+			</div>
+		</div>
+	</section>
+
+	<!-- Quick Showcase (Productos & Servicios separados) -->
+	<section class="options-showcase" id="opciones">
+		<div class="container">
+			<!-- Servicios Section Header -->
+			<div class="showcase-header services-header" id="servicios">
+				<span class="showcase-badge service-badge"
+					>Atención & Asesoría Directa</span
+				>
+				<h2>Nuestros Servicios Especializados</h2>
+				<p>
+					Haz clic en cualquier servicio para solicitar información
+					directa vía WhatsApp
+				</p>
+			</div>
+
+			<div class="options-grid services-grid">
+				<div
+					class="option-card service-card"
+					data-service-msg="¡Hola! Quisiera solicitar información y cotización sobre el servicio de Reparación y Arreglo de Prendas."
+				>
+					<div class="option-icon">✂️</div>
+					<h3>Reparación y Arreglo de Prendas</h3>
+					<p>
+						Servicio profesional de entalle, dobladillo industrial,
+						ajuste y restauración de prendas a medida.
+					</p>
+					<span class="option-link service-link"
+						>Solicitar por WhatsApp 💬</span
+					>
+				</div>
+
+				<div
+					class="option-card service-card"
+					data-service-msg="¡Hola! Me interesa el servicio de Diseño de Logos para Bordar. ¿Podrían asesorarme con las especificaciones y presupuestos?"
+				>
+					<div class="option-icon">🧵</div>
+					<h3>Diseño de Logos para Bordar</h3>
+					<p>
+						Digitalización, ponchado y adaptación de vectores e
+						insignias institucionales para matriz de bordado.
+					</p>
+					<span class="option-link service-link"
+						>Solicitar por WhatsApp 💬</span
+					>
+				</div>
+
+				<div
+					class="option-card service-card"
+					data-service-msg="¡Hola! Deseo cotizar el servicio de Diseño de Logos para Estampar (Serigrafía / DTF / Sublimación)."
+				>
+					<div class="option-icon">🎨</div>
+					<h3>Diseño de Logos para Estampar</h3>
+					<p>
+						Creación gráfica y preparación de artes finales para
+						serigrafía, DTF, vinilo textil y sublimación.
+					</p>
+					<span class="option-link service-link"
+						>Solicitar por WhatsApp 💬</span
+					>
+				</div>
+
+				<div
+					class="option-card service-card"
+					data-service-msg="¡Hola! Quisiera obtener más información sobre la Mentoría de Aprendizaje y Pasantías en confección y sastrería en Semireys."
+				>
+					<div class="option-icon">🎓</div>
+					<h3>Mentoría de Aprendizaje & Pasantías</h3>
+					<p>
+						Programas de formación práctica, tutorías técnicas de
+						costura y pasantías en nuestro taller de confección.
+					</p>
+					<span class="option-link service-link"
+						>Solicitar por WhatsApp 💬</span
+					>
+				</div>
 			</div>
 		</div>
 	</section>
@@ -141,52 +230,109 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	<!-- Sobre Nosotros Section -->
 	<section class="about-section" id="sobre-nosotros">
 		<div class="container">
+			<!-- Header centered -->
+			<div class="about-header">
+				<span class="about-eyebrow">Quiénes Somos</span>
+				<h2 class="about-title">Sobre Nosotros</h2>
+				<p class="about-lead">
+					En <strong>Semireys</strong> nos apasiona la excelencia textil,
+					combinando la tradición sartorial con innovación moderna para
+					ofrecer prendas y confecciones de la más alta calidad.
+				</p>
+			</div>
+
+			<!-- 3-column grid: features | logo | stats -->
 			<div class="about-grid">
-				<div class="about-text-content">
-					<h2 class="about-title">Sobre Nosotros</h2>
-					<p class="about-lead">
-						En <strong>Semireys</strong> nos apasiona la excelencia textil, combinando la tradición sartorial con innovación moderna para ofrecer prendas y confecciones de la más alta calidad.
-					</p>
-					<div class="about-features">
-						<div class="feature-item">
-							<div class="feature-icon">✨</div>
-							<div>
-								<h4>Tela de Calidad</h4>
-								<p>Seleccionamos cuidadosamente telas finas, lino, satén y tejidos antifluidos de máxima durabilidad.</p>
-							</div>
+				<!-- Left: Features -->
+				<div class="about-features">
+					<div class="feature-item">
+						<div class="feature-icon">✨</div>
+						<div>
+							<h4>Tela de Calidad</h4>
+							<p>
+								Seleccionamos cuidadosamente telas finas, lino,
+								satén y tejidos antifluidos de máxima
+								durabilidad.
+							</p>
 						</div>
-						<div class="feature-item">
-							<div class="feature-icon">✂️</div>
-							<div>
-								<h4>Confección a Medida</h4>
-								<p>Realizamos arreglos profesionales, dobladillos industriales y personalización exacta para cada cliente.</p>
-							</div>
+					</div>
+					<div class="feature-item">
+						<div class="feature-icon">✂️</div>
+						<div>
+							<h4>Confección a Medida</h4>
+							<p>
+								Realizamos arreglos profesionales, dobladillos
+								industriales y personalización exacta para cada
+								cliente.
+							</p>
 						</div>
-						<div class="feature-item">
-							<div class="feature-icon">🤝</div>
-							<div>
-								<h4>Atención Personalizada</h4>
-								<p>Brindamos asesoría directa vía WhatsApp para pedidos corporativos, académicos y familiares.</p>
-							</div>
+					</div>
+					<div class="feature-item">
+						<div class="feature-icon">🤝</div>
+						<div>
+							<h4>Atención Personalizada</h4>
+							<p>
+								Brindamos asesoría directa vía WhatsApp para
+								pedidos corporativos, académicos y familiares.
+							</p>
+						</div>
+					</div>
+					<div class="feature-item">
+						<div class="feature-icon">🎓</div>
+						<div>
+							<h4>Camisas de Promoción</h4>
+							<p>
+								Diseñamos y confeccionamos prendas únicas para
+								grupos de egresados, con bordados y estampados
+								personalizados.
+							</p>
 						</div>
 					</div>
 				</div>
 
-				<div class="about-stats-card">
+				<!-- Center + Right: Merged logo + stats card -->
+				<div class="about-combined-card">
+					<!-- Logo area -->
+					<div class="combined-logo-area">
+						<img
+							src={semireysLogoImg.src}
+							alt="Logo Semireys"
+							class="about-logo-img"
+						/>
+					</div>
+
+					<!-- Divider -->
+					<div class="combined-divider"></div>
+
+					<!-- Stats -->
 					<div class="stats-grid">
-						<div class="stat-box">
+						<div class="stat-box" style={`background-image: url('${tijeraImg.src}')`}>
 							<span class="stat-number">10+</span>
 							<span class="stat-label">Años de Experiencia</span>
 						</div>
-						<div class="stat-box">
+						<div class="stat-box" style={`background-image: url('${sintaImg.src}')`}>
 							<span class="stat-number">100%</span>
 							<span class="stat-label">Garantía de Ajuste</span>
 						</div>
-						<div class="stat-box">
+						<div class="stat-box" style={`background-image: url('${hiloImg.src}')`}>
 							<span class="stat-number">8</span>
 							<span class="stat-label">Líneas de Confección</span>
 						</div>
+						<div class="stat-box" style={`background-image: url('${agujaImg.src}')`}>
+							<span class="stat-number">500+</span>
+							<span class="stat-label">Clientes Satisfechos</span>
+						</div>
 					</div>
+
+					<!-- CTA -->
+					<a
+						href={`https://api.whatsapp.com/send?phone=${import.meta.env.PUBLIC_WHATSAPP_PHONE}&text=${encodeURIComponent("¡Hola! Quisiera obtener más información sobre los servicios de Semireys.")}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="about-cta-btn"
+					>
+						💬 Contáctanos por WhatsApp
+					</a>
 				</div>
 			</div>
 		</div>
@@ -194,17 +340,25 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 </Layout>
 
 <script>
-	document.addEventListener('DOMContentLoaded', () => {
-		const categorySelect = document.getElementById('filter-category') as HTMLSelectElement | null;
-		const brandSelect = document.getElementById('filter-brand') as HTMLSelectElement | null;
-		const sizeSelect = document.getElementById('filter-size') as HTMLSelectElement | null;
-		const resetBtn = document.getElementById('reset-filters-btn');
-		const emptyResetBtn = document.getElementById('empty-reset-btn');
-		
-		const productCards = document.querySelectorAll<HTMLElement>('.product-card');
-		const counter = document.getElementById('product-counter');
-		const emptyCatalog = document.getElementById('empty-catalog');
-		const optionCards = document.querySelectorAll<HTMLElement>('.option-card');
+	document.addEventListener("DOMContentLoaded", () => {
+		const categorySelect = document.getElementById(
+			"filter-category",
+		) as HTMLSelectElement | null;
+		const brandSelect = document.getElementById(
+			"filter-brand",
+		) as HTMLSelectElement | null;
+		const sizeSelect = document.getElementById(
+			"filter-size",
+		) as HTMLSelectElement | null;
+		const resetBtn = document.getElementById("reset-filters-btn");
+		const emptyResetBtn = document.getElementById("empty-reset-btn");
+
+		const productCards =
+			document.querySelectorAll<HTMLElement>(".product-card");
+		const counter = document.getElementById("product-counter");
+		const emptyCatalog = document.getElementById("empty-catalog");
+		const optionCards =
+			document.querySelectorAll<HTMLElement>(".option-card");
 
 		function applyFilters() {
 			if (!categorySelect || !brandSelect || !sizeSelect) return;
@@ -216,10 +370,10 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 			let visibleCount = 0;
 
 			productCards.forEach((card) => {
-				const cardCategory = card.getAttribute('data-category') || '';
-				const cardBrand = card.getAttribute('data-brand') || '';
-				const rawSizes = card.getAttribute('data-sizes') || '[]';
-				
+				const cardCategory = card.getAttribute("data-category") || "";
+				const cardBrand = card.getAttribute("data-brand") || "";
+				const rawSizes = card.getAttribute("data-sizes") || "[]";
+
 				let cardSizes: string[] = [];
 				try {
 					cardSizes = JSON.parse(rawSizes);
@@ -227,79 +381,88 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 					cardSizes = [];
 				}
 
-				const matchCategory = selectedCategory === 'all' || cardCategory === selectedCategory;
-				const matchBrand = selectedBrand === 'all' || cardBrand === selectedBrand;
-				const matchSize = selectedSize === 'all' || cardSizes.includes(selectedSize);
+				const matchCategory =
+					selectedCategory === "all" ||
+					cardCategory === selectedCategory;
+				const matchBrand =
+					selectedBrand === "all" || cardBrand === selectedBrand;
+				const matchSize =
+					selectedSize === "all" || cardSizes.includes(selectedSize);
 
 				if (matchCategory && matchBrand && matchSize) {
-					card.style.display = 'flex';
+					card.style.display = "flex";
 					visibleCount++;
 				} else {
-					card.style.display = 'none';
+					card.style.display = "none";
 				}
 			});
 
 			if (counter) {
-				counter.textContent = `${visibleCount} ${visibleCount === 1 ? 'producto o servicio disponible' : 'productos o servicios disponibles'}`;
+				counter.textContent = `${visibleCount} ${visibleCount === 1 ? "producto o servicio disponible" : "productos o servicios disponibles"}`;
 			}
 
 			if (emptyCatalog) {
 				if (visibleCount === 0) {
-					emptyCatalog.classList.remove('hidden');
+					emptyCatalog.classList.remove("hidden");
 				} else {
-					emptyCatalog.classList.add('hidden');
+					emptyCatalog.classList.add("hidden");
 				}
 			}
 		}
 
-		if (categorySelect) categorySelect.addEventListener('change', applyFilters);
-		if (brandSelect) brandSelect.addEventListener('change', applyFilters);
-		if (sizeSelect) sizeSelect.addEventListener('change', applyFilters);
+		if (categorySelect)
+			categorySelect.addEventListener("change", applyFilters);
+		if (brandSelect) brandSelect.addEventListener("change", applyFilters);
+		if (sizeSelect) sizeSelect.addEventListener("change", applyFilters);
 
 		function resetAll() {
-			if (categorySelect) categorySelect.value = 'all';
-			if (brandSelect) brandSelect.value = 'all';
-			if (sizeSelect) sizeSelect.value = 'all';
+			if (categorySelect) categorySelect.value = "all";
+			if (brandSelect) brandSelect.value = "all";
+			if (sizeSelect) sizeSelect.value = "all";
 			applyFilters();
 		}
 
-		if (resetBtn) resetBtn.addEventListener('click', resetAll);
-		if (emptyResetBtn) emptyResetBtn.addEventListener('click', resetAll);
+		if (resetBtn) resetBtn.addEventListener("click", resetAll);
+		if (emptyResetBtn) emptyResetBtn.addEventListener("click", resetAll);
 
-		const serviceCards = document.querySelectorAll<HTMLElement>('.service-card');
+		const serviceCards =
+			document.querySelectorAll<HTMLElement>(".service-card");
 
 		optionCards.forEach((card) => {
-			card.addEventListener('click', () => {
-				const targetCategory = card.getAttribute('data-category-target');
+			card.addEventListener("click", () => {
+				const targetCategory = card.getAttribute(
+					"data-category-target",
+				);
 				if (targetCategory && categorySelect) {
 					categorySelect.value = targetCategory;
 					applyFilters();
 
-					const catalogElem = document.getElementById('catalogo');
+					const catalogElem = document.getElementById("catalogo");
 					if (catalogElem) {
-						catalogElem.scrollIntoView({ behavior: 'smooth' });
+						catalogElem.scrollIntoView({ behavior: "smooth" });
 					}
 				}
 			});
 		});
 
 		serviceCards.forEach((card) => {
-			card.addEventListener('click', () => {
-				const serviceMsg = card.getAttribute('data-service-msg');
+			card.addEventListener("click", () => {
+				const serviceMsg = card.getAttribute("data-service-msg");
 				if (serviceMsg) {
-					const phone = "584145321885";
+					const phone = import.meta.env.PUBLIC_WHATSAPP_PHONE;
 					const encodedMsg = encodeURIComponent(serviceMsg);
 					const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
-					window.open(whatsappUrl, '_blank');
+					window.open(whatsappUrl, "_blank");
 				}
 			});
 		});
-	});</script>
+	});
+</script>
 
 <style>
 	.hero-section {
-		background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-		color: #FFFFFF;
+		background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+		color: #ffffff;
 		padding: 4.5rem 1.5rem 4rem;
 		text-align: center;
 		position: relative;
@@ -307,13 +470,17 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.hero-section::before {
-		content: '';
+		content: "";
 		position: absolute;
 		top: 0;
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: radial-gradient(circle at 50% 30%, rgba(194, 125, 56, 0.2) 0%, transparent 65%);
+		background: radial-gradient(
+			circle at 50% 30%,
+			rgba(194, 125, 56, 0.2) 0%,
+			transparent 65%
+		);
 		pointer-events: none;
 	}
 
@@ -325,17 +492,11 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.hero-subtitle {
-		display: inline-block;
+		display: block;
 		color: var(--accent-primary);
-		font-size: 0.85rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.22em;
-		margin-bottom: 1rem;
-		background: rgba(194, 125, 56, 0.12);
-		padding: 4px 14px;
-		border-radius: 20px;
-		border: 1px solid rgba(194, 125, 56, 0.3);
+		font-size: 1.1rem;
+		font-weight: 600;
+		margin-bottom: 0.5rem;
 	}
 
 	.hero-title {
@@ -344,14 +505,14 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 		font-weight: 700;
 		line-height: 1.15;
 		margin-bottom: 1.25rem;
-		background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+		background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
 
 	.hero-description {
 		font-size: 1.1rem;
-		color: #94A3B8;
+		color: #94a3b8;
 		line-height: 1.65;
 		max-width: 660px;
 		margin: 0 auto;
@@ -377,22 +538,15 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.showcase-badge {
-		display: inline-block;
-		font-size: 0.75rem;
-		font-weight: 800;
-		letter-spacing: 0.15em;
+		display: block;
+		font-size: 1.1rem;
+		font-weight: 600;
 		color: var(--accent-primary);
-		background: var(--accent-soft);
-		padding: 3px 12px;
-		border-radius: 12px;
-		border: 1px solid rgba(194, 125, 56, 0.25);
-		margin-bottom: 0.75rem;
+		margin-bottom: 0.5rem;
 	}
 
 	.service-badge {
-		color: #0284C7;
-		background: #E0F2FE;
-		border-color: #BAE6FD;
+		color: #0284c7;
 	}
 
 	.showcase-header h2 {
@@ -414,30 +568,55 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.service-card {
-		border-left: 4px solid #0284C7;
+		border-left: 4px solid #0284c7;
 	}
 
 	.service-card:hover {
-		border-color: #0284C7;
+		border-color: #0284c7;
 	}
 
 	.service-link {
-		color: #0284C7;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+		color: #ffffff !important;
+		font-weight: 700;
+		font-size: 0.88rem;
+		padding: 0.65rem 1rem;
+		border-radius: var(--radius-sm);
+		transition: all 0.25s ease;
+		box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+		margin-top: 0.25rem;
+		text-align: center;
+	}
+
+	.service-card:hover .service-link {
+		transform: translateY(-2px);
+		box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
 	}
 
 	.option-card {
 		background: var(--bg-card);
 		border: 1px solid var(--border-color);
 		border-radius: var(--radius-md);
-		padding: 1.75rem 1.5rem;
+		padding: 1.25rem 1.25rem;
 		cursor: pointer;
 		transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
+		align-items: center;
+		text-align: center;
+		gap: 0.5rem;
 		position: relative;
 		overflow: hidden;
 		box-shadow: var(--shadow-sm);
+	}
+
+	.service-card {
+		padding: 1.25rem 1.15rem 1.15rem;
+		gap: 0.4rem;
 	}
 
 	.option-card:hover {
@@ -447,32 +626,42 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.option-icon {
-		font-size: 2.2rem;
-		margin-bottom: 0.25rem;
+		font-size: 1.8rem;
+		margin-bottom: 0.1rem;
+		line-height: 1;
 	}
 
 	.option-card h3 {
-		font-size: 1.2rem;
+		font-size: 1.1rem;
 		font-weight: 700;
 		color: var(--accent-secondary);
+		line-height: 1.3;
 	}
 
 	.option-card p {
-		font-size: 0.92rem;
+		font-size: 0.88rem;
 		color: var(--text-muted);
-		line-height: 1.5;
+		line-height: 1.45;
 		flex: 1;
+		margin-bottom: 0.25rem;
 	}
 
 	.option-link {
 		font-size: 0.88rem;
 		font-weight: 700;
 		color: var(--accent-primary);
-		margin-top: 0.5rem;
+		margin-top: 0.25rem;
 		transition: transform 0.2s ease;
 	}
 
-	.option-card:hover .option-link {
+	.service-link {
+		margin-top: auto;
+		padding: 0.55rem 0.85rem;
+		font-size: 0.85rem;
+		width: 100%;
+	}
+
+	.option-card:hover .option-link:not(.service-link) {
 		transform: translateX(4px);
 	}
 
@@ -501,7 +690,7 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	}
 
 	.filter-bar {
-		background: #FFFFFF;
+		background: #ffffff;
 		border: 1px solid var(--border-color);
 		border-radius: var(--radius-md);
 		padding: 1.25rem 1.5rem;
@@ -546,7 +735,7 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 
 	.reset-filters-btn {
 		padding: 0.65rem 1.2rem;
-		background: #F1F5F9;
+		background: #f1f5f9;
 		border: 1.5px solid var(--border-color);
 		border-radius: var(--radius-sm);
 		color: var(--text-muted);
@@ -573,7 +762,7 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	.empty-catalog {
 		text-align: center;
 		padding: 4rem 2rem;
-		background: #FFFFFF;
+		background: #ffffff;
 		border-radius: var(--radius-md);
 		border: 1px dashed var(--border-color);
 		margin-top: 1rem;
@@ -602,7 +791,7 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 	.btn-primary {
 		padding: 0.75rem 1.5rem;
 		background: var(--accent-primary);
-		color: #FFFFFF;
+		color: #ffffff;
 		border: none;
 		border-radius: var(--radius-sm);
 		font-family: inherit;
@@ -616,150 +805,292 @@ const allSizes = Array.from(new Set(productsData.flatMap(p => p.sizes || [])));
 		background: var(--accent-primary-hover);
 	}
 
-	/* Sobre Nosotros Redesign */
+	/* ===================== Sobre Nosotros Redesign ===================== */
 	.about-section {
-		background: #FFFFFF;
-		padding: 5rem 1.5rem;
+		background: linear-gradient(180deg, #fdfbf7 0%, #ffffff 100%);
+		padding: 5rem 1.5rem 6rem;
 		border-top: 1px solid var(--border-color);
 	}
 
-	.about-grid {
-		display: grid;
-		grid-template-columns: 1.2fr 0.8fr;
-		gap: 3.5rem;
-		align-items: stretch;
+	.about-header {
+		text-align: center;
+		max-width: 680px;
+		margin: 0 auto 3.5rem;
 	}
 
-	@media (max-width: 900px) {
-		.about-grid {
-			grid-template-columns: 1fr;
-			gap: 2.5rem;
-		}
+	.about-eyebrow {
+		display: inline-block;
+		font-size: 0.85rem;
+		font-weight: 700;
+		color: var(--accent-primary);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-bottom: 0.75rem;
 	}
 
 	.about-title {
 		font-family: var(--font-serif);
-		font-size: 2.5rem;
+		font-size: clamp(2rem, 4vw, 2.8rem);
 		font-weight: 700;
 		color: var(--accent-secondary);
 		margin-bottom: 1rem;
+		line-height: 1.2;
 	}
 
 	.about-lead {
 		font-size: 1.05rem;
 		color: var(--text-muted);
-		line-height: 1.7;
-		margin-bottom: 2rem;
+		line-height: 1.75;
 	}
 
+	.about-lead strong {
+		color: var(--accent-primary);
+	}
+
+	/* 2-column grid: features | combined card */
+	.about-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 2.5rem;
+		align-items: start;
+	}
+
+	@media (max-width: 900px) {
+		.about-grid {
+			grid-template-columns: 1fr;
+			gap: 2rem;
+		}
+	}
+
+	/* Features column */
 	.about-features {
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 0.85rem;
 	}
 
 	.feature-item {
 		display: flex;
 		align-items: flex-start;
-		gap: 1rem;
-		background: var(--bg-main);
-		padding: 1.1rem 1.25rem;
+		gap: 0.9rem;
+		background: #ffffff;
+		padding: 1rem 1.1rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--border-color);
-		transition: transform 0.2s ease, border-color 0.2s ease;
+		transition:
+			transform 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+		box-shadow: var(--shadow-sm);
 	}
 
 	.feature-item:hover {
 		transform: translateX(4px);
 		border-color: var(--accent-primary);
+		box-shadow: 0 4px 16px rgba(194, 125, 56, 0.1);
 	}
 
 	.feature-icon {
-		font-size: 1.5rem;
+		font-size: 1.3rem;
 		background: var(--accent-soft);
-		width: 44px;
-		height: 44px;
-		border-radius: 12px;
+		width: 42px;
+		height: 42px;
+		border-radius: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		flex-shrink: 0;
+		border: 1px solid rgba(194, 125, 56, 0.2);
 	}
 
 	.feature-item h4 {
-		font-size: 1.05rem;
+		font-size: 0.95rem;
 		font-weight: 700;
 		color: var(--accent-secondary);
 		margin-bottom: 0.2rem;
 	}
 
 	.feature-item p {
-		font-size: 0.9rem;
+		font-size: 0.85rem;
 		color: var(--text-muted);
 		line-height: 1.5;
 	}
 
-	.about-stats-card {
-		background: linear-gradient(145deg, #0F172A 0%, #1E293B 100%);
-		color: #FFFFFF;
-		padding: 2.25rem 2rem;
+	/* Combined card */
+	.about-combined-card {
+		background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
 		border-radius: var(--radius-lg);
-		box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+		box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
+		border: 1px solid rgba(194, 125, 56, 0.2);
+		overflow: hidden;
 		display: flex;
 		flex-direction: column;
-		justify-content: space-around;
+		align-items: center;
+		gap: 0;
 		position: relative;
-		overflow: hidden;
-		border: 1px solid rgba(194, 125, 56, 0.2);
 	}
 
-	.about-stats-card::before {
-		content: '';
+	.about-combined-card::before {
+		content: "";
 		position: absolute;
 		top: 0;
 		right: 0;
 		width: 100%;
 		height: 100%;
-		background: radial-gradient(circle at 90% 10%, rgba(194, 125, 56, 0.25) 0%, transparent 50%);
+		background: radial-gradient(
+			circle at 85% 10%,
+			rgba(194, 125, 56, 0.2) 0%,
+			transparent 50%
+		);
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	.combined-logo-area {
+		background: #ffffff;
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 1.25rem 1.25rem 1rem;
+	}
+
+	.about-logo-img {
+		width: 100%;
+		max-width: 130px;
+		height: auto;
+		object-fit: contain;
+		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.07));
+	}
+
+	.combined-divider {
+		width: 100%;
+		height: 3px;
+		background: linear-gradient(
+			90deg,
+			transparent,
+			var(--accent-primary),
+			transparent
+		);
+	}
+
+	.about-cta-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+		color: #ffffff;
+		text-decoration: none;
+		font-weight: 700;
+		font-size: 0.9rem;
+		padding: 0.8rem 1.25rem;
+		border-radius: var(--radius-sm);
+		transition: all 0.25s ease;
+		box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+		white-space: nowrap;
+	}
+
+	.about-cta-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 8px 20px rgba(37, 211, 102, 0.45);
+	}
+
+	.about-combined-card .stats-grid {
+		width: 100%;
+		padding: 1rem 1.5rem 0.75rem;
+		position: relative;
+		z-index: 1;
+		gap: 0;
+	}
+
+	.about-combined-card .about-cta-btn {
+		margin: 0.5rem 1.25rem 1.25rem;
+		width: calc(100% - 2.5rem);
+		justify-content: center;
+		position: relative;
+		z-index: 1;
+		font-size: 0.85rem;
+		padding: 0.6rem 1rem;
+	}
+
+	/* Stats card (kept for reference) */
+	.about-stats-card {
+		background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+		color: #ffffff;
+		padding: 2rem 1.75rem;
+		border-radius: var(--radius-lg);
+		box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		position: relative;
+		overflow: hidden;
+		border: 1px solid rgba(194, 125, 56, 0.2);
+		height: 100%;
+	}
+
+	.about-stats-card::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		background: radial-gradient(
+			circle at 90% 10%,
+			rgba(194, 125, 56, 0.25) 0%,
+			transparent 50%
+		);
 		pointer-events: none;
 	}
 
 	.stats-grid {
-		display: flex;
-		flex-direction: column;
-		gap: 1.75rem;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
 		position: relative;
 		z-index: 2;
 	}
 
 	.stat-box {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
-		gap: 1.25rem;
-		padding-bottom: 1.5rem;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-		text-align: left;
-	}
-
-	.stat-box:last-child {
-		padding-bottom: 0;
-		border-bottom: none;
+		justify-content: center;
+		text-align: center;
+		gap: 0.85rem;
+		padding: 1.25rem 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		border-radius: var(--radius-sm);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 	}
 
 	.stat-number {
 		font-family: var(--font-serif);
-		font-size: 2.5rem;
+		font-size: 2rem;
 		font-weight: 700;
-		color: var(--accent-primary);
+		color: #ffffff;
 		line-height: 1;
 		white-space: nowrap;
-		min-width: 85px;
+		text-align: center;
+		text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 	}
 
 	.stat-label {
-		font-size: 0.95rem;
-		color: #E2E8F0;
+		font-size: 0.9rem;
+		color: #ffffff;
 		font-weight: 600;
-		line-height: 1.35;
+		line-height: 1.3;
+		text-align: center;
+		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
+	}
+
+	@media (max-width: 480px) {
+		.stats-grid {
+			grid-template-columns: 1fr;
+		}
 	}
 </style>
