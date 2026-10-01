@@ -2,11 +2,11 @@
 import Layout from "../layouts/Layout.astro";
 import ProductCard from "../components/ProductCard.astro";
 import productsData from "../data/products.json";
-import tijeraImg from '../assets/tijera.jpg';
-import sintaImg from '../assets/sinta.jpg';
-import hiloImg from '../assets/hilo.jpg';
-import agujaImg from '../assets/aguja.jpg';
-import semireysLogoImg from '../assets/semireys.jpg';
+import tijeraImg from "../assets/tijera.jpg";
+import sintaImg from "../assets/sinta.jpg";
+import hiloImg from "../assets/hilo.jpg";
+import agujaImg from "../assets/aguja.jpg";
+import semireysLogoImg from "../assets/semireys.jpg";
 
 // Unique values for filters
 const categories = [
@@ -46,7 +46,10 @@ const allSizes = Array.from(
 	description="Explora nuestras líneas exclusivas: Ajustes para vender, pijamas personales, pijamas familiares, camisas personalizadas, uniformes deportivos, guayaberas, uniformes quirúrgicos y camisas de promociones."
 >
 	<!-- Hero Section -->
-	<section class="hero-section">
+	<section
+		class="hero-section"
+		style={`--bg-img: url('${semireysLogoImg.src}')`}
+	>
 		<div class="hero-content">
 			<h1 class="hero-title">Moda, Confección & Estilo a tu Medida</h1>
 			<p class="hero-description">
@@ -58,7 +61,11 @@ const allSizes = Array.from(
 	</section>
 
 	<!-- Catalog Section with Filters -->
-	<section class="catalog-section" id="catalogo">
+	<section
+		class="catalog-section"
+		id="catalogo"
+		style={`--bg-img: url('${sintaImg.src}')`}
+	>
 		<div class="container">
 			<div class="section-header">
 				<div>
@@ -149,7 +156,11 @@ const allSizes = Array.from(
 	</section>
 
 	<!-- Quick Showcase (Productos & Servicios separados) -->
-	<section class="options-showcase" id="opciones">
+	<section
+		class="options-showcase"
+		id="opciones"
+		style={`--bg-img: url('${hiloImg.src}')`}
+	>
 		<div class="container">
 			<!-- Servicios Section Header -->
 			<div class="showcase-header services-header" id="servicios">
@@ -228,7 +239,11 @@ const allSizes = Array.from(
 	</section>
 
 	<!-- Sobre Nosotros Section -->
-	<section class="about-section" id="sobre-nosotros">
+	<section
+		class="about-section"
+		id="sobre-nosotros"
+		style={`--bg-img: url('${tijeraImg.src}')`}
+	>
 		<div class="container">
 			<!-- Header centered -->
 			<div class="about-header">
@@ -292,33 +307,25 @@ const allSizes = Array.from(
 
 				<!-- Center + Right: Merged logo + stats card -->
 				<div class="about-combined-card">
-					<!-- Logo area -->
-					<div class="combined-logo-area">
-						<img
-							src={semireysLogoImg.src}
-							alt="Logo Semireys"
-							class="about-logo-img"
-						/>
-					</div>
-
-					<!-- Divider -->
-					<div class="combined-divider"></div>
-
 					<!-- Stats -->
 					<div class="stats-grid">
-						<div class="stat-box" style={`background-image: url('${tijeraImg.src}')`}>
+						<div class="stat-box">
+							<div class="stat-bg" style={`background-image: url('${tijeraImg.src}')`}></div>
 							<span class="stat-number">10+</span>
 							<span class="stat-label">Años de Experiencia</span>
 						</div>
-						<div class="stat-box" style={`background-image: url('${sintaImg.src}')`}>
+						<div class="stat-box">
+							<div class="stat-bg" style={`background-image: url('${sintaImg.src}')`}></div>
 							<span class="stat-number">100%</span>
 							<span class="stat-label">Garantía de Ajuste</span>
 						</div>
-						<div class="stat-box" style={`background-image: url('${hiloImg.src}')`}>
+						<div class="stat-box">
+							<div class="stat-bg" style={`background-image: url('${hiloImg.src}')`}></div>
 							<span class="stat-number">8</span>
 							<span class="stat-label">Líneas de Confección</span>
 						</div>
-						<div class="stat-box" style={`background-image: url('${agujaImg.src}')`}>
+						<div class="stat-box">
+							<div class="stat-bg" style={`background-image: url('${agujaImg.src}')`}></div>
 							<span class="stat-number">500+</span>
 							<span class="stat-label">Clientes Satisfechos</span>
 						</div>
@@ -461,27 +468,25 @@ const allSizes = Array.from(
 
 <style>
 	.hero-section {
-		background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-		color: #ffffff;
+		background: var(--bg-card);
+		color: var(--text-primary);
 		padding: 4.5rem 1.5rem 4rem;
 		text-align: center;
 		position: relative;
 		overflow: hidden;
 	}
 
-	.hero-section::before {
+
+	.hero-section::after {
 		content: "";
 		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: radial-gradient(
-			circle at 50% 30%,
-			rgba(194, 125, 56, 0.2) 0%,
-			transparent 65%
-		);
+		inset: 0;
+		background-image: var(--bg-img);
+		background-size: 150px;
+		background-repeat: repeat;
+		opacity: 0.01;
 		pointer-events: none;
+		z-index: 1;
 	}
 
 	.hero-content {
@@ -505,14 +510,14 @@ const allSizes = Array.from(
 		font-weight: 700;
 		line-height: 1.15;
 		margin-bottom: 1.25rem;
-		background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+		background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-muted) 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
 
 	.hero-description {
 		font-size: 1.1rem;
-		color: #94a3b8;
+		color: var(--text-muted);
 		line-height: 1.65;
 		max-width: 660px;
 		margin: 0 auto;
@@ -526,6 +531,30 @@ const allSizes = Array.from(
 	.options-showcase {
 		padding: 3.5rem 1.5rem 2rem;
 		background-color: var(--bg-main);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.options-showcase::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: var(--bg-img);
+		background-size: 300px;
+		background-repeat: repeat;
+		opacity: 0.09;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	[data-theme="dark"] .options-showcase::before {
+		opacity: 0.05;
+		filter: invert(1);
+	}
+
+	.options-showcase .container {
+		position: relative;
+		z-index: 1;
 	}
 
 	.showcase-header {
@@ -667,6 +696,30 @@ const allSizes = Array.from(
 
 	.catalog-section {
 		padding: 3rem 1.5rem 5rem;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.catalog-section::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: var(--bg-img);
+		background-size: 300px;
+		background-repeat: repeat;
+		opacity: 0.09;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	[data-theme="dark"] .catalog-section::before {
+		opacity: 0.05;
+		filter: invert(1);
+	}
+
+	.catalog-section .container {
+		position: relative;
+		z-index: 1;
 	}
 
 	.section-header {
@@ -690,7 +743,7 @@ const allSizes = Array.from(
 	}
 
 	.filter-bar {
-		background: #ffffff;
+		background: var(--bg-card);
 		border: 1px solid var(--border-color);
 		border-radius: var(--radius-md);
 		padding: 1.25rem 1.5rem;
@@ -762,7 +815,7 @@ const allSizes = Array.from(
 	.empty-catalog {
 		text-align: center;
 		padding: 4rem 2rem;
-		background: #ffffff;
+		background: var(--bg-card);
 		border-radius: var(--radius-md);
 		border: 1px dashed var(--border-color);
 		margin-top: 1rem;
@@ -805,11 +858,35 @@ const allSizes = Array.from(
 		background: var(--accent-primary-hover);
 	}
 
-	/* ===================== Sobre Nosotros Redesign ===================== */
 	.about-section {
-		background: linear-gradient(180deg, #fdfbf7 0%, #ffffff 100%);
+		background: var(--bg-main);
 		padding: 5rem 1.5rem 6rem;
 		border-top: 1px solid var(--border-color);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.about-section::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: var(--bg-img);
+		background-size: 250px;
+		background-repeat: repeat;
+		opacity: 0.09;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	[data-theme="dark"] .about-section::before {
+		background-blend-mode: screen;
+		opacity: 0.06;
+		filter: invert(1);
+	}
+
+	.about-section > .container {
+		position: relative;
+		z-index: 1;
 	}
 
 	.about-header {
@@ -873,7 +950,7 @@ const allSizes = Array.from(
 		display: flex;
 		align-items: flex-start;
 		gap: 0.9rem;
-		background: #ffffff;
+		background: var(--bg-card);
 		padding: 1rem 1.1rem;
 		border-radius: var(--radius-md);
 		border: 1px solid var(--border-color);
@@ -918,10 +995,10 @@ const allSizes = Array.from(
 
 	/* Combined card */
 	.about-combined-card {
-		background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+		background: var(--bg-card);
 		border-radius: var(--radius-lg);
-		box-shadow: 0 20px 50px rgba(15, 23, 42, 0.18);
-		border: 1px solid rgba(194, 125, 56, 0.2);
+		box-shadow: var(--shadow-md);
+		border: 1px solid var(--border-color);
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
@@ -930,37 +1007,22 @@ const allSizes = Array.from(
 		position: relative;
 	}
 
-	.about-combined-card::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		right: 0;
-		width: 100%;
-		height: 100%;
-		background: radial-gradient(
-			circle at 85% 10%,
-			rgba(194, 125, 56, 0.2) 0%,
-			transparent 50%
-		);
-		pointer-events: none;
-		z-index: 0;
-	}
 
 	.combined-logo-area {
-		background: #ffffff;
+		height: 200px;
 		width: 100%;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 1.25rem 1.25rem 1rem;
+		/* No padding so image takes full space */
 	}
 
 	.about-logo-img {
 		width: 100%;
-		max-width: 130px;
-		height: auto;
-		object-fit: contain;
-		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.07));
+		height: 100%;
+		max-width: none;
+		object-fit: cover;
+		object-position: 50% 36%;
 	}
 
 	.combined-divider {
@@ -997,10 +1059,10 @@ const allSizes = Array.from(
 
 	.about-combined-card .stats-grid {
 		width: 100%;
-		padding: 1rem 1.5rem 0.75rem;
+		padding: 1.5rem;
 		position: relative;
 		z-index: 1;
-		gap: 0;
+		gap: 1rem;
 	}
 
 	.about-combined-card .about-cta-btn {
@@ -1047,7 +1109,7 @@ const allSizes = Array.from(
 	.stats-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 1.5rem;
+		gap: 1rem;
 		position: relative;
 		z-index: 2;
 	}
@@ -1059,33 +1121,51 @@ const allSizes = Array.from(
 		justify-content: center;
 		text-align: center;
 		gap: 0.85rem;
-		padding: 1.25rem 0.5rem;
-		border: 1px solid rgba(255, 255, 255, 0.12);
+		padding: 1.5rem 1rem;
+		border: 1px solid var(--border-color);
 		border-radius: var(--radius-sm);
+		background-color: var(--bg-main);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.stat-bg {
+		position: absolute;
+		inset: 0;
 		background-size: cover;
 		background-position: center;
 		background-repeat: no-repeat;
-		box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+		z-index: 0;
+		opacity: 1;
+		mix-blend-mode: multiply;
+	}
+
+	[data-theme="dark"] .stat-bg {
+		opacity: 1;
+		mix-blend-mode: screen;
+	}
+
+	.stat-box > * {
+		position: relative;
+		z-index: 1;
 	}
 
 	.stat-number {
 		font-family: var(--font-serif);
 		font-size: 2rem;
 		font-weight: 700;
-		color: #ffffff;
+		color: var(--text-primary);
 		line-height: 1;
 		white-space: nowrap;
 		text-align: center;
-		text-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
 	}
 
 	.stat-label {
 		font-size: 0.9rem;
-		color: #ffffff;
+		color: var(--text-muted);
 		font-weight: 600;
 		line-height: 1.3;
 		text-align: center;
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85);
 	}
 
 	@media (max-width: 480px) {

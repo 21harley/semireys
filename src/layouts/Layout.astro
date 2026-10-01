@@ -1,16 +1,18 @@
 ---
+import semireysTransparentLogo from "../assets/semireys-removebg.png";
+
 interface Props {
 	title?: string;
 	description?: string;
 }
 
-const { 
-	title = "Catálogo – Semireys", 
-	description = "Colección de ropa elegante, uniformes quirúrgicos, camisas de promoción y prendas personalizadas de Semireys." 
+const {
+	title = "Catálogo – Semireys",
+	description = "Colección de ropa elegante, uniformes quirúrgicos, camisas de promoción y prendas personalizadas de Semireys.",
 } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 	<head>
 		<meta charset="UTF-8" />
@@ -19,11 +21,32 @@ const {
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		
+
 		<!-- Google Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+			rel="stylesheet"
+		/>
+
+		<script is:inline>
+			const theme = (() => {
+				if (
+					typeof localStorage !== "undefined" &&
+					localStorage.getItem("theme")
+				) {
+					return localStorage.getItem("theme");
+				}
+				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+					return "dark";
+				}
+				return "light";
+			})();
+			if (theme === "dark") {
+				document.documentElement.setAttribute("data-theme", "dark");
+			}
+		</script>
 	</head>
 	<body>
 		<!-- Header / Navbar -->
@@ -35,29 +58,68 @@ const {
 
 				<nav class="nav-links" id="nav-links">
 					<a href="/" class="nav-link active">Inicio / Catálogo</a>
-					
+
 					<div class="nav-dropdown">
 						<button type="button" class="nav-dropdown-btn">
-							Opciones &amp; Servicios <span class="arrow-down">▾</span>
+							Opciones &amp; Servicios <span class="arrow-down"
+								>▾</span
+							>
 						</button>
 						<div class="dropdown-menu">
-							<a href="/#catalogo" class="dropdown-item">✂️ Ajustes para Vender</a>
-							<a href="/#catalogo" class="dropdown-item">🌙 Pijamas Personales</a>
-							<a href="/#catalogo" class="dropdown-item">👨‍👩‍👧‍👦 Pijamas Familiares</a>
-							<a href="/#catalogo" class="dropdown-item">👔 Camisas Personalizadas</a>
-							<a href="/#catalogo" class="dropdown-item">⚽ Uniformes Deportivos</a>
-							<a href="/#catalogo" class="dropdown-item">🧵 Guayaberas</a>
-							<a href="/#catalogo" class="dropdown-item">🩺 Uniformes Quirúrgicos</a>
-							<a href="/#catalogo" class="dropdown-item">🎓 Camisas de Promociones</a>
+							<a href="/#catalogo" class="dropdown-item"
+								>✂️ Ajustes para Vender</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>🌙 Pijamas Personales</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>👨‍👩‍👧‍👦 Pijamas Familiares</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>👔 Camisas Personalizadas</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>⚽ Uniformes Deportivos</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>🧵 Guayaberas</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>🩺 Uniformes Quirúrgicos</a
+							>
+							<a href="/#catalogo" class="dropdown-item"
+								>🎓 Camisas de Promociones</a
+							>
 						</div>
 					</div>
 
-					<a href="/#sobre-nosotros" class="nav-link">Sobre Nosotros</a>
+					<a href="/#sobre-nosotros" class="nav-link"
+						>Sobre Nosotros</a
+					>
 				</nav>
 
-				<button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menú">
-					<span class="hamburger-icon" id="hamburger-icon">☰</span>
-				</button>
+				<div class="nav-controls">
+					<button
+						type="button"
+						id="theme-toggle"
+						class="theme-toggle-btn"
+						aria-label="Cambiar tema"
+					>
+						<span class="theme-icon light-icon">🌞</span>
+						<span class="theme-icon dark-icon">🌙</span>
+					</button>
+
+					<button
+						type="button"
+						class="mobile-menu-btn"
+						id="mobile-menu-btn"
+						aria-label="Abrir menú"
+					>
+						<span class="hamburger-icon" id="hamburger-icon"
+							>☰</span
+						>
+					</button>
+				</div>
 			</div>
 		</header>
 
@@ -70,25 +132,52 @@ const {
 		</main>
 
 		<!-- Footer -->
-		<footer class="site-footer">
+		<footer
+			class="site-footer"
+			style={`--bg-footer: url('${semireysTransparentLogo.src}')`}
+		>
 			<div class="footer-container">
 				<div class="footer-grid">
 					<div class="footer-brand">
 						<h3><span class="logo-accent">SEMI</span>REYS</h3>
-						<p>Alta confección, sastrería, ropa quirúrgica y moda exclusiva a tu medida con visualización 3D.</p>
+						<p>
+							Alta confección, sastrería, ropa quirúrgica y moda
+							exclusiva a tu medida con visualización 3D.
+						</p>
 					</div>
 
 					<div class="footer-column">
 						<h4>Nuestras Opciones</h4>
 						<ul>
-							<li><a href="/#catalogo">✂️ Ajustes para Vender</a></li>
-							<li><a href="/#catalogo">🌙 Pijamas Personales</a></li>
-							<li><a href="/#catalogo">👨‍👩‍👧‍👦 Pijamas Familiares</a></li>
-							<li><a href="/#catalogo">👔 Camisas Personalizadas</a></li>
-							<li><a href="/#catalogo">⚽ Uniformes Deportivos</a></li>
-							<li><a href="/#catalogo">🪡 Guayaberas de Lino</a></li>
-							<li><a href="/#catalogo">🩺 Uniformes Quirúrgicos</a></li>
-							<li><a href="/#catalogo">🎓 Camisas de Promociones</a></li>
+							<li>
+								<a href="/#catalogo">✂️ Ajustes para Vender</a>
+							</li>
+							<li>
+								<a href="/#catalogo">🌙 Pijamas Personales</a>
+							</li>
+							<li>
+								<a href="/#catalogo">👨‍👩‍👧‍👦 Pijamas Familiares</a>
+							</li>
+							<li>
+								<a href="/#catalogo"
+									>👔 Camisas Personalizadas</a
+								>
+							</li>
+							<li>
+								<a href="/#catalogo">⚽ Uniformes Deportivos</a>
+							</li>
+							<li>
+								<a href="/#catalogo">🪡 Guayaberas de Lino</a>
+							</li>
+							<li>
+								<a href="/#catalogo">🩺 Uniformes Quirúrgicos</a
+								>
+							</li>
+							<li>
+								<a href="/#catalogo"
+									>🎓 Camisas de Promociones</a
+								>
+							</li>
 						</ul>
 					</div>
 
@@ -100,57 +189,85 @@ const {
 				</div>
 
 				<div class="footer-copy">
-					&copy; {new Date().getFullYear()} SEMIREYS. Todos los derechos reservados.
+					&copy; {new Date().getFullYear()} SEMIREYS. Todos los derechos
+					reservados.
 				</div>
 			</div>
 		</footer>
 
 		<script>
-			document.addEventListener('DOMContentLoaded', () => {
-				const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-				const navLinks = document.getElementById('nav-links');
-				const hamburgerIcon = document.getElementById('hamburger-icon');
-				const navDropdownBtn = document.querySelector('.nav-dropdown-btn');
-				const navDropdown = document.querySelector('.nav-dropdown');
-				const navOverlay = document.getElementById('nav-overlay');
+			document.addEventListener("DOMContentLoaded", () => {
+				const mobileMenuBtn =
+					document.getElementById("mobile-menu-btn");
+				const navLinks = document.getElementById("nav-links");
+				const hamburgerIcon = document.getElementById("hamburger-icon");
+				const navDropdownBtn =
+					document.querySelector(".nav-dropdown-btn");
+				const navDropdown = document.querySelector(".nav-dropdown");
+				const navOverlay = document.getElementById("nav-overlay");
+				const themeToggle = document.getElementById("theme-toggle");
+
+				if (themeToggle) {
+					themeToggle.addEventListener("click", () => {
+						const currentTheme =
+							document.documentElement.getAttribute("data-theme");
+						const newTheme =
+							currentTheme === "dark" ? "light" : "dark";
+						if (newTheme === "dark") {
+							document.documentElement.setAttribute(
+								"data-theme",
+								"dark",
+							);
+						} else {
+							document.documentElement.removeAttribute(
+								"data-theme",
+							);
+						}
+						localStorage.setItem("theme", newTheme);
+					});
+				}
 
 				function closeMenu() {
-					if (navLinks) navLinks.classList.remove('active');
-					if (navOverlay) navOverlay.classList.remove('active');
-					if (hamburgerIcon) hamburgerIcon.textContent = '☰';
+					if (navLinks) navLinks.classList.remove("active");
+					if (navOverlay) navOverlay.classList.remove("active");
+					if (hamburgerIcon) hamburgerIcon.textContent = "☰";
 				}
 
 				if (mobileMenuBtn && navLinks) {
-					mobileMenuBtn.addEventListener('click', () => {
-						const isOpen = navLinks.classList.toggle('active');
-						if (navOverlay) navOverlay.classList.toggle('active', isOpen);
-						if (hamburgerIcon) hamburgerIcon.textContent = isOpen ? '✕' : '☰';
+					mobileMenuBtn.addEventListener("click", () => {
+						const isOpen = navLinks.classList.toggle("active");
+						if (navOverlay)
+							navOverlay.classList.toggle("active", isOpen);
+						if (hamburgerIcon)
+							hamburgerIcon.textContent = isOpen ? "✕" : "☰";
 					});
 				}
 
 				// Close on overlay click
 				if (navOverlay) {
-					navOverlay.addEventListener('click', closeMenu);
+					navOverlay.addEventListener("click", closeMenu);
 				}
 
 				if (navDropdownBtn && navDropdown) {
-					navDropdownBtn.addEventListener('click', (e) => {
+					navDropdownBtn.addEventListener("click", (e) => {
 						if (window.innerWidth <= 1024) {
 							e.stopPropagation();
-							navDropdown.classList.toggle('active');
+							navDropdown.classList.toggle("active");
 						}
 					});
 				}
 
 				// Close menu when a link is clicked
 				if (navLinks) {
-					navLinks.querySelectorAll('.dropdown-item, .nav-link').forEach(link => {
-						link.addEventListener('click', () => {
-							if (window.innerWidth <= 1024) {
-								closeMenu();
-							}
+					navLinks
+						.querySelectorAll(".dropdown-item, .nav-link")
+						.forEach((link) => {
+							link.addEventListener("click", () => {
+								if (window.innerWidth <= 1024) {
+									closeMenu();
+								}
+							});
 						});
-					});
 				}
 			});
 		</script>
@@ -159,23 +276,26 @@ const {
 
 <style is:global>
 	:root {
-		--font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-		--font-serif: 'Playfair Display', Georgia, serif;
+		--font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+		--font-serif: "Playfair Display", Georgia, serif;
 
-		--bg-main: #FDFBF7;
-		--bg-card: #FFFFFF;
+		--bg-main: #fdfbf7;
+		--bg-card: #ffffff;
 		--surface-dark: #121824;
-		--text-primary: #1E293B;
-		--text-muted: #64748B;
-		--text-light: #F8FAFC;
+		--text-primary: #1e293b;
+		--text-muted: #64748b;
+		--text-light: #f8fafc;
 
-		--accent-primary: #C27D38;
-		--accent-primary-hover: #A66627;
-		--accent-secondary: #0F172A;
-		--accent-soft: #FDF4EB;
+		--bg-nav: rgba(253, 251, 247, 0.92);
+		--bg-nav-mobile: rgba(253, 251, 247, 0.99);
 
-		--border-color: #E2E8F0;
-		--border-focus: #C27D38;
+		--accent-primary: #c27d38;
+		--accent-primary-hover: #a66627;
+		--accent-secondary: #0f172a;
+		--accent-soft: #fdf4eb;
+
+		--border-color: #e2e8f0;
+		--border-focus: #c27d38;
 
 		--radius-sm: 8px;
 		--radius-md: 14px;
@@ -184,6 +304,27 @@ const {
 		--shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
 		--shadow-md: 0 10px 30px rgba(15, 23, 42, 0.08);
 		--shadow-hover: 0 20px 40px rgba(194, 125, 56, 0.12);
+	}
+
+	[data-theme="dark"] {
+		--bg-main: #0f172a;
+		--bg-card: #1e293b;
+		--surface-dark: #0f172a;
+		--text-primary: #f8fafc;
+		--text-muted: #94a3b8;
+		--text-light: #f8fafc;
+
+		--bg-nav: rgba(15, 23, 42, 0.92);
+		--bg-nav-mobile: rgba(15, 23, 42, 0.99);
+
+		--accent-secondary: #f8fafc;
+		--accent-soft: rgba(194, 125, 56, 0.15);
+
+		--border-color: #334155;
+
+		--shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+		--shadow-md: 0 10px 30px rgba(0, 0, 0, 0.5);
+		--shadow-hover: 0 20px 40px rgba(194, 125, 56, 0.2);
 	}
 
 	* {
@@ -211,10 +352,10 @@ const {
 		position: sticky;
 		top: 0;
 		z-index: 100;
-		background: rgba(253, 251, 247, 0.92);
+		background: var(--bg-nav);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
-		border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+		border-bottom: 1px solid var(--border-color);
 		transition: all 0.3s ease;
 	}
 
@@ -258,7 +399,8 @@ const {
 		position: relative;
 	}
 
-	.nav-link:hover, .nav-link.active {
+	.nav-link:hover,
+	.nav-link.active {
 		color: var(--accent-primary);
 	}
 
@@ -272,7 +414,7 @@ const {
 
 	.nav-highlight:hover {
 		background: var(--accent-primary);
-		color: #FFFFFF;
+		color: #ffffff;
 	}
 
 	.nav-dropdown {
@@ -303,7 +445,7 @@ const {
 		top: 100%;
 		left: 0;
 		width: 250px;
-		background: #FFFFFF;
+		background: var(--bg-card);
 		border: 1px solid var(--border-color);
 		border-radius: var(--radius-md);
 		box-shadow: var(--shadow-md);
@@ -323,7 +465,9 @@ const {
 		color: var(--text-primary);
 		font-size: 0.9rem;
 		font-weight: 500;
-		transition: background-color 0.2s ease, color 0.2s ease;
+		transition:
+			background-color 0.2s ease,
+			color 0.2s ease;
 	}
 
 	.dropdown-item:hover {
@@ -337,10 +481,31 @@ const {
 	}
 
 	.site-footer {
-		background-color: var(--surface-dark);
-		color: var(--text-light);
+		background-color: var(--bg-card);
+		color: var(--text-primary);
 		padding: 4rem 1.5rem 2rem;
-		margin-top: 4rem;
+		margin-top: 0;
+		border-top: 1px solid var(--border-color);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.site-footer::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: url('/images/semireys_logo.png');
+		background-size: 400px;
+		background-position: center;
+		background-repeat: no-repeat;
+		opacity: 0.4;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	[data-theme="dark"] .site-footer::before {
+		filter: invert(1);
+		opacity: 0.05;
 	}
 
 	.footer-container {
@@ -349,6 +514,8 @@ const {
 		display: flex;
 		flex-direction: column;
 		gap: 3rem;
+		position: relative;
+		z-index: 1;
 	}
 
 	.footer-grid {
@@ -389,6 +556,59 @@ const {
 		background: var(--accent-soft);
 	}
 
+	.nav-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.theme-toggle-btn {
+		background: var(--accent-soft);
+		border: 1px solid var(--border-color);
+		border-radius: 50%;
+		width: 38px;
+		height: 38px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		color: var(--accent-primary);
+		font-size: 1.1rem;
+		transition: all 0.2s ease;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.theme-toggle-btn:hover {
+		border-color: var(--accent-primary);
+		transform: scale(1.05);
+	}
+
+	.theme-icon {
+		position: absolute;
+		transition: all 0.3s ease;
+	}
+
+	.light-icon {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.dark-icon {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+
+	[data-theme="dark"] .light-icon {
+		opacity: 0;
+		transform: translateY(-20px);
+	}
+
+	[data-theme="dark"] .dark-icon {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
 	@media (max-width: 1024px) {
 		.mobile-menu-btn {
 			display: flex;
@@ -412,7 +632,7 @@ const {
 			overflow-y: auto;
 			flex-direction: column;
 			gap: 0;
-			background: rgba(253, 251, 247, 0.99);
+			background: var(--bg-nav-mobile);
 			backdrop-filter: blur(12px);
 			border-bottom: 2px solid var(--border-color);
 			padding: 0.5rem 1.5rem 1rem;
@@ -421,8 +641,14 @@ const {
 		}
 
 		@keyframes slideDown {
-			from { opacity: 0; transform: translateY(-6px); }
-			to   { opacity: 1; transform: translateY(0); }
+			from {
+				opacity: 0;
+				transform: translateY(-6px);
+			}
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
 		}
 
 		.nav-links.active {
@@ -481,12 +707,12 @@ const {
 		font-family: var(--font-serif);
 		font-size: 1.75rem;
 		letter-spacing: 0.1em;
-		color: #FFFFFF;
+		color: var(--accent-secondary);
 		margin-bottom: 0.75rem;
 	}
 
 	.footer-brand p {
-		color: #94A3B8;
+		color: var(--text-muted);
 		font-size: 0.92rem;
 		line-height: 1.6;
 		max-width: 380px;
@@ -495,7 +721,7 @@ const {
 	.footer-column h4 {
 		font-size: 1.05rem;
 		font-weight: 700;
-		color: #FFFFFF;
+		color: var(--text-primary);
 		margin-bottom: 1rem;
 	}
 
@@ -507,7 +733,7 @@ const {
 	}
 
 	.footer-column a {
-		color: #94A3B8;
+		color: var(--text-muted);
 		text-decoration: none;
 		font-size: 0.9rem;
 		transition: color 0.2s ease;
@@ -518,16 +744,16 @@ const {
 	}
 
 	.footer-column p {
-		color: #94A3B8;
+		color: var(--text-muted);
 		font-size: 0.9rem;
 		margin-bottom: 0.5rem;
 	}
 
 	.footer-copy {
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		border-top: 1px solid var(--border-color);
 		padding-top: 1.75rem;
 		font-size: 0.85rem;
-		color: #64748B;
+		color: var(--text-muted);
 		text-align: center;
 	}
 </style>

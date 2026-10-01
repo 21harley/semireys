@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import productsData from '../../data/products.json';
 import type { Product } from '../../components/ProductCard.astro';
+import hiloImg from '../../assets/hilo.jpg';
 
 export async function getStaticPaths() {
 	return productsData.map((product) => ({
@@ -22,7 +23,8 @@ const is3D = product.customizable3D ?? false;
 ---
 
 <Layout title={`${product.name} – Semireys`} description={product.description}>
-	<div class="product-detail-container">
+	<div class="product-detail-wrapper" style={`--bg-img: url('${hiloImg.src}')`}>
+		<div class="product-detail-container">
 		<!-- Breadcrumb -->
 		<nav class="breadcrumb">
 			<a href="/" class="back-link">
@@ -109,6 +111,7 @@ const is3D = product.customizable3D ?? false;
 								type="button" 
 								class="color-chip" 
 								data-color-name={color.name}
+								data-color-hex={color.hex}
 								title={color.name}
 							>
 								<span class="color-preview" style={`background-color: ${color.hex};`}></span>
@@ -162,6 +165,7 @@ const is3D = product.customizable3D ?? false;
 					</button>
 				</div>
 			</div>
+		</div>
 		</div>
 	</div>
 </Layout>
@@ -289,17 +293,54 @@ const is3D = product.customizable3D ?? false;
 
 		if (customizeBtn) {
 			customizeBtn.addEventListener('click', () => {
-				window.location.href = '/personalizar?product=' + encodeURIComponent(productName);
+				const activeColorChip = document.querySelector('.color-chip.active') as HTMLButtonElement | null;
+				const colorHex = activeColorChip?.getAttribute('data-color-hex') || '#F4F1EA';
+				const colorName = activeColorChip?.getAttribute('data-color-name') || '';
+				const sizeEl = document.querySelector('.size-chip.active') as HTMLButtonElement | null;
+				const sizeName = sizeEl?.getAttribute('data-size-name') || '';
+
+				const params = new URLSearchParams({
+					product: productName,
+					color: colorHex,
+					colorName: colorName,
+					size: sizeName,
+				});
+				window.location.href = '/personalizar?' + params.toString();
 			});
 		}
 	});
 </script>
 
 <style>
+	.product-detail-wrapper {
+		width: 100%;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.product-detail-wrapper::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		background-image: var(--bg-img);
+		background-size: 300px;
+		background-repeat: repeat;
+		opacity: 0.05;
+		pointer-events: none;
+		z-index: 0;
+	}
+
+	[data-theme="dark"] .product-detail-wrapper::before {
+		filter: invert(1);
+		opacity: 0.03;
+	}
+
 	.product-detail-container {
 		max-width: 1240px;
 		margin: 0 auto;
 		padding: 2rem 1.5rem 4rem;
+		position: relative;
+		z-index: 1;
 	}
 
 	.breadcrumb {
@@ -566,7 +607,7 @@ const is3D = product.customizable3D ?? false;
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.55rem 1.1rem;
-		background: #FFFFFF;
+		background: var(--bg-card);
 		border: 1.5px solid var(--border-color);
 		border-radius: var(--radius-sm);
 		cursor: pointer;
@@ -585,6 +626,7 @@ const is3D = product.customizable3D ?? false;
 		border-color: var(--accent-primary);
 		background-color: var(--accent-soft);
 		box-shadow: 0 0 0 1px var(--accent-primary);
+		color: var(--accent-primary);
 	}
 
 	.color-preview {
@@ -604,7 +646,7 @@ const is3D = product.customizable3D ?? false;
 		min-width: 48px;
 		height: 44px;
 		padding: 0 1rem;
-		background: #FFFFFF;
+		background: var(--bg-card);
 		border: 1.5px solid var(--border-color);
 		border-radius: var(--radius-sm);
 		cursor: pointer;
@@ -624,7 +666,7 @@ const is3D = product.customizable3D ?? false;
 
 	.size-chip.active {
 		border-color: var(--accent-primary);
-		background-color: var(--accent-secondary);
+		background-color: var(--accent-primary);
 		color: #FFFFFF;
 	}
 
@@ -638,7 +680,7 @@ const is3D = product.customizable3D ?? false;
 	.btn-customize {
 		width: 100%;
 		padding: 0.95rem 1.5rem;
-		background: #FFFFFF;
+		background: var(--bg-card);
 		border: 1.5px dashed var(--accent-primary);
 		border-radius: var(--radius-md);
 		color: var(--accent-primary);
