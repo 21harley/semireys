@@ -11,7 +11,6 @@ import semireysLogoImg from "../assets/semireys.jpg";
 // Unique values for filters
 const categories = [
 	{ id: "all", label: "Todas las Opciones" },
-	{ id: "ajustes-vender", label: "✂️ Ajustes para Vender", icon: "✂️" },
 	{ id: "pijamas-personales", label: "🌙 Pijamas Personales", icon: "🌙" },
 	{ id: "pijamas-familiares", label: "👨‍👩‍👧‍👦 Pijamas Familiares", icon: "👨‍👩‍👧‍👦" },
 	{
@@ -43,7 +42,7 @@ const allSizes = Array.from(
 
 <Layout
 	title="Catálogo – Semireys"
-	description="Explora nuestras líneas exclusivas: Ajustes para vender, pijamas personales, pijamas familiares, camisas personalizadas, uniformes deportivos, guayaberas, uniformes quirúrgicos y camisas de promociones."
+	description="Explora nuestras líneas exclusivas: pijamas personales, pijamas familiares, camisas personalizadas, uniformes deportivos, guayaberas, uniformes quirúrgicos y camisas de promociones."
 >
 	<!-- Hero Section -->
 	<section
@@ -53,9 +52,9 @@ const allSizes = Array.from(
 		<div class="hero-content">
 			<h1 class="hero-title">Moda, Confección & Estilo a tu Medida</h1>
 			<p class="hero-description">
-				Explora nuestras categorías exclusivas: guayaberas de lino,
-				camisas personalizadas, pijamas familiares, uniformes
-				deportivos, prendas quirúrgicas y camisas de promoción.
+				Explora nuestras categorías exclusivas: guayaberas, camisas
+				personalizadas, pijamas familiares, uniformes deportivos,
+				prendas quirúrgicas y camisas de promoción.
 			</p>
 		</div>
 	</section>
@@ -159,7 +158,7 @@ const allSizes = Array.from(
 	<section
 		class="options-showcase"
 		id="opciones"
-		style={`--bg-img: url('${hiloImg.src}')`}
+		style={`--bg-img: url('${tijeraImg.src}')`}
 	>
 		<div class="container">
 			<!-- Servicios Section Header -->
@@ -185,9 +184,14 @@ const allSizes = Array.from(
 						Servicio profesional de entalle, dobladillo industrial,
 						ajuste y restauración de prendas a medida.
 					</p>
-					<span class="option-link service-link"
-						>Solicitar por WhatsApp 💬</span
+					<a
+						href={`https://api.whatsapp.com/send?phone=${import.meta.env.PUBLIC_WHATSAPP_PHONE || "584145321885"}&text=${encodeURIComponent("¡Hola! Quisiera solicitar información y cotización sobre el servicio de Reparación y Arreglo de Prendas.")}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="option-link service-link"
 					>
+						Solicitar Arreglo ✂️
+					</a>
 				</div>
 
 				<div
@@ -200,9 +204,14 @@ const allSizes = Array.from(
 						Digitalización, ponchado y adaptación de vectores e
 						insignias institucionales para matriz de bordado.
 					</p>
-					<span class="option-link service-link"
-						>Solicitar por WhatsApp 💬</span
+					<a
+						href={`https://api.whatsapp.com/send?phone=${import.meta.env.PUBLIC_WHATSAPP_PHONE || "584145321885"}&text=${encodeURIComponent("¡Hola! Me interesa el servicio de Diseño de Logos para Bordar. ¿Podrían asesorarme con las especificaciones y presupuestos?")}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="option-link service-link"
 					>
+						Cotizar Bordado 🧵
+					</a>
 				</div>
 
 				<div
@@ -215,9 +224,14 @@ const allSizes = Array.from(
 						Creación gráfica y preparación de artes finales para
 						serigrafía, DTF, vinilo textil y sublimación.
 					</p>
-					<span class="option-link service-link"
-						>Solicitar por WhatsApp 💬</span
+					<a
+						href={`https://api.whatsapp.com/send?phone=${import.meta.env.PUBLIC_WHATSAPP_PHONE || "584145321885"}&text=${encodeURIComponent("¡Hola! Deseo cotizar el servicio de Diseño de Logos para Estampar (Serigrafía / DTF / Sublimación).")}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="option-link service-link"
 					>
+						Cotizar Estampado 🎨
+					</a>
 				</div>
 
 				<div
@@ -230,9 +244,14 @@ const allSizes = Array.from(
 						Programas de formación práctica, tutorías técnicas de
 						costura y pasantías en nuestro taller de confección.
 					</p>
-					<span class="option-link service-link"
-						>Solicitar por WhatsApp 💬</span
+					<a
+						href={`https://api.whatsapp.com/send?phone=${import.meta.env.PUBLIC_WHATSAPP_PHONE || "584145321885"}&text=${encodeURIComponent("¡Hola! Quisiera obtener más información sobre la Mentoría de Aprendizaje y Pasantías en confección y sastrería en Semireys.")}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="option-link service-link"
 					>
+						Consultar Mentorías 🎓
+					</a>
 				</div>
 			</div>
 		</div>
@@ -242,7 +261,7 @@ const allSizes = Array.from(
 	<section
 		class="about-section"
 		id="sobre-nosotros"
-		style={`--bg-img: url('${tijeraImg.src}')`}
+		style={`--bg-img: url('${hiloImg.src}')`}
 	>
 		<div class="container">
 			<!-- Header centered -->
@@ -310,22 +329,38 @@ const allSizes = Array.from(
 					<!-- Stats -->
 					<div class="stats-grid">
 						<div class="stat-box">
-							<div class="stat-bg" style={`background-image: url('${tijeraImg.src}')`}></div>
+							<div
+								class="stat-bg"
+								style={`background-image: url('${tijeraImg.src}')`}
+							>
+							</div>
 							<span class="stat-number">10+</span>
 							<span class="stat-label">Años de Experiencia</span>
 						</div>
 						<div class="stat-box">
-							<div class="stat-bg" style={`background-image: url('${sintaImg.src}')`}></div>
+							<div
+								class="stat-bg"
+								style={`background-image: url('${sintaImg.src}')`}
+							>
+							</div>
 							<span class="stat-number">100%</span>
 							<span class="stat-label">Garantía de Ajuste</span>
 						</div>
 						<div class="stat-box">
-							<div class="stat-bg" style={`background-image: url('${hiloImg.src}')`}></div>
+							<div
+								class="stat-bg"
+								style={`background-image: url('${hiloImg.src}')`}
+							>
+							</div>
 							<span class="stat-number">8</span>
 							<span class="stat-label">Líneas de Confección</span>
 						</div>
 						<div class="stat-box">
-							<div class="stat-bg" style={`background-image: url('${agujaImg.src}')`}></div>
+							<div
+								class="stat-bg"
+								style={`background-image: url('${agujaImg.src}')`}
+							>
+							</div>
 							<span class="stat-number">500+</span>
 							<span class="stat-label">Clientes Satisfechos</span>
 						</div>
@@ -453,10 +488,11 @@ const allSizes = Array.from(
 		});
 
 		serviceCards.forEach((card) => {
-			card.addEventListener("click", () => {
+			card.addEventListener("click", (e) => {
+				if ((e.target as HTMLElement).closest("a")) return;
 				const serviceMsg = card.getAttribute("data-service-msg");
 				if (serviceMsg) {
-					const phone = import.meta.env.PUBLIC_WHATSAPP_PHONE;
+					const phone = import.meta.env.PUBLIC_WHATSAPP_PHONE || "584145321885";
 					const encodedMsg = encodeURIComponent(serviceMsg);
 					const whatsappUrl = `https://api.whatsapp.com/send?phone=${phone}&text=${encodedMsg}`;
 					window.open(whatsappUrl, "_blank");
@@ -475,7 +511,6 @@ const allSizes = Array.from(
 		position: relative;
 		overflow: hidden;
 	}
-
 
 	.hero-section::after {
 		content: "";
@@ -510,7 +545,11 @@ const allSizes = Array.from(
 		font-weight: 700;
 		line-height: 1.15;
 		margin-bottom: 1.25rem;
-		background: linear-gradient(180deg, var(--text-primary) 0%, var(--text-muted) 100%);
+		background: linear-gradient(
+			180deg,
+			var(--text-primary) 0%,
+			var(--text-muted) 100%
+		);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 	}
@@ -575,7 +614,7 @@ const allSizes = Array.from(
 	}
 
 	.service-badge {
-		color: #0284c7;
+		color: #d97706;
 	}
 
 	.showcase-header h2 {
@@ -597,11 +636,11 @@ const allSizes = Array.from(
 	}
 
 	.service-card {
-		border-left: 4px solid #0284c7;
+		border-left: 4px solid #d97706;
 	}
 
 	.service-card:hover {
-		border-color: #0284c7;
+		border-color: #d97706;
 	}
 
 	.service-link {
@@ -680,6 +719,7 @@ const allSizes = Array.from(
 		font-weight: 700;
 		color: var(--accent-primary);
 		margin-top: 0.25rem;
+		text-decoration: none;
 		transition: transform 0.2s ease;
 	}
 
@@ -688,6 +728,7 @@ const allSizes = Array.from(
 		padding: 0.55rem 0.85rem;
 		font-size: 0.85rem;
 		width: 100%;
+		text-decoration: none;
 	}
 
 	.option-card:hover .option-link:not(.service-link) {
@@ -1006,7 +1047,6 @@ const allSizes = Array.from(
 		gap: 0;
 		position: relative;
 	}
-
 
 	.combined-logo-area {
 		height: 200px;
